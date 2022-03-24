@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:title="Home"
+        android:icon="@drawable/ic_house_solid"/>
+    <item
+        android:id="@+id/reading"
+        android:title="Reading"
+        android:icon="@drawable/ic_book_open_solid"/>
+    <item
+        android:id="@+id/read"
+        android:title="Read"
+        android:icon="@drawable/ic_book_solid"/>
+    <item
+        android:id="@+id/tbr"
+        android:title="TBR"
+        android:icon="@drawable/ic_list_solid"/>
+    <item
+        android:id="@+id/trophies"
+        android:title="Trophies"
+        android:icon="@drawable/ic_trophy_solid"/>
+
+</menu>
