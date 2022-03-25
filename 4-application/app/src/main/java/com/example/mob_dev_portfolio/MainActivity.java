@@ -36,23 +36,23 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (item.getItemId()) {
             case R.id.home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottomNavigationView, homeFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
                 return true;
 
             case R.id.reading:
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottomNavigationView, readingFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, readingFragment).commit();
                 return true;
 
             case R.id.read:
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottomNavigationView, readFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, readFragment).commit();
                 return true;
 
             case R.id.tbr:
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottomNavigationView, tbrFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, tbrFragment).commit();
                 return true;
 
             case R.id.trophies:
-                getSupportFragmentManager().beginTransaction().replace(R.id.bottomNavigationView, trophiesFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, trophiesFragment).commit();
                 return true;
         }
         return false;
