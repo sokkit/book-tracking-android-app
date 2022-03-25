@@ -38,7 +38,8 @@ public class HomeFragment extends Fragment {
 
     public void onViewCreated(View view, @Nullable Bundle savedInstance) {
         SearchView searchView = (SearchView) getView().findViewById(R.id.searchView);
-
+        TextView title = (TextView) getView().findViewById(R.id.textView2);
+        TextView author = (TextView) getView().findViewById(R.id.textView3);
 
         //Access text from search view
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -54,14 +55,9 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    System.out.println(response.getJSONArray("items").getJSONObject(1).getJSONObject("volumeInfo").getString("title"));
-                                    System.out.println(response.getJSONArray("items").getJSONObject(1).getJSONObject("volumeInfo").getString("authors"));
+                                    System.out.println(response);
                                     String titleResponse =  response.getJSONArray("items").getJSONObject(1).getJSONObject("volumeInfo").getString("title");
                                     String authorResponse =  response.getJSONArray("items").getJSONObject(1).getJSONObject("volumeInfo").getString("authors");
-                                    System.out.println("title: " + titleResponse);
-                                    System.out.println("author: " + authorResponse);
-                                    TextView title = (TextView) getView().findViewById(R.id.textView2);
-                                    TextView author = (TextView) getView().findViewById(R.id.textView3);
                                     title.setText(titleResponse);
                                     author.setText(authorResponse);
                                 } catch (JSONException err) {
