@@ -33,4 +33,13 @@ public class Book {
                 ", author='" + author + '\'' +
                 '}';
     }
+
+    public String parseBook() {
+        String newAuthorString = author.replaceAll("[\\[$|]|\"]", "");
+//        newAuthorString.replaceAll("\\[", "");;
+//        newAuthorString.replaceAll("]", "");
+//        newAuthorString.replace("\"", "");
+        String res = title + " by: " + newAuthorString;
+        return res;
+    }
 }

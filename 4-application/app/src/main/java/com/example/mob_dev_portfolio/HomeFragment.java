@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,13 +42,16 @@ public class HomeFragment extends Fragment {
 
     public void onViewCreated(View view, @Nullable Bundle savedInstance) {
         SearchView searchView = (SearchView) getView().findViewById(R.id.searchView);
-        TextView title = (TextView) getView().findViewById(R.id.textView2);
-        TextView author = (TextView) getView().findViewById(R.id.textView3);
+//        TextView title = (TextView) getView().findViewById(R.id.textView2);
+//        TextView author = (TextView) getView().findViewById(R.id.textView3);
         ArrayList<Book> books = new ArrayList<>();
+
+
 
         //Access text from search view
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
+            //Query API and display results on search submit
             public boolean onQueryTextSubmit(String s) {
 
                 Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
@@ -61,6 +66,7 @@ public class HomeFragment extends Fragment {
                                     System.out.println(response);
                                     String bookTitle;
                                     String bookAuthor;
+                                    books.clear();
                                     for (int i = 0; i < 10; i++) {
                                         System.out.println("i: " + i);
                                         bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
@@ -69,11 +75,19 @@ public class HomeFragment extends Fragment {
                                         System.out.println("author: " + bookAuthor);
                                         books.add(new Book(bookTitle, bookAuthor));
                                     }
-                                    String titleResponse =  response.getJSONArray("items").getJSONObject(1).getJSONObject("volumeInfo").getString("title");
-                                    String authorResponse =  response.getJSONArray("items").getJSONObject(1).getJSONObject("volumeInfo").getString("authors");
-                                    title.setText(titleResponse);
-                                    author.setText(authorResponse);
-                                    System.out.println(books);
+
+                                    ArrayList<String> listContent = new ArrayList<String>();
+                                    for (Book b: books) {
+                                        listContent.add(b.parseBook());
+                                    }
+                                    ArrayAdapter<String> la = new ArrayAdapter<String>(
+                                            getContext(),
+                                            android.R.layout.simple_list_item_1,
+                                            listContent
+                                    );
+
+                                    ListView lv = (ListView) getView().findViewById(R.id.searchResults);
+                                    lv.setAdapter(la);
                                 } catch (JSONException err) {
                                     err.printStackTrace();
                                 }
