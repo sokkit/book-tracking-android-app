@@ -23,6 +23,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class HomeFragment extends Fragment {
 
 
@@ -40,6 +42,7 @@ public class HomeFragment extends Fragment {
         SearchView searchView = (SearchView) getView().findViewById(R.id.searchView);
         TextView title = (TextView) getView().findViewById(R.id.textView2);
         TextView author = (TextView) getView().findViewById(R.id.textView3);
+        ArrayList<Book> books = new ArrayList<>();
 
         //Access text from search view
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -56,10 +59,21 @@ public class HomeFragment extends Fragment {
                             public void onResponse(JSONObject response) {
                                 try {
                                     System.out.println(response);
+                                    String bookTitle;
+                                    String bookAuthor;
+                                    for (int i = 0; i < 10; i++) {
+                                        System.out.println("i: " + i);
+                                        bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
+                                        bookAuthor = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("authors");
+                                        System.out.println("title: " + bookTitle);
+                                        System.out.println("author: " + bookAuthor);
+                                        books.add(new Book(bookTitle, bookAuthor));
+                                    }
                                     String titleResponse =  response.getJSONArray("items").getJSONObject(1).getJSONObject("volumeInfo").getString("title");
                                     String authorResponse =  response.getJSONArray("items").getJSONObject(1).getJSONObject("volumeInfo").getString("authors");
                                     title.setText(titleResponse);
                                     author.setText(authorResponse);
+                                    System.out.println(books);
                                 } catch (JSONException err) {
                                     err.printStackTrace();
                                 }
