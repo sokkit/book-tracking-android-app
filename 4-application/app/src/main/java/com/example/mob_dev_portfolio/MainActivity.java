@@ -4,15 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.room.Room;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.mob_dev_portfolio.data.Book;
+import com.example.mob_dev_portfolio.data.BookDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView bottomNavigationView;
+
+    ExecutorService executor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +32,30 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.home);
+
+        BookDB db = Room.databaseBuilder(
+                getApplicationContext(),
+                BookDB.class,
+                "book-db").build();
+
+        this.executor = Executors.newFixedThreadPool(4);
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                db.bookDao().deleteAllBooks();
+                db.bookDao().insertAll(
+                        new Book("John Barnes", "Book 1",
+                                1, "01/03/2022",
+                                "15/03/2022"),
+                        new Book("Paula Poundstone", "Book 2",
+                                1, "15/03/2022",
+                                "20/03/2022"),
+                        new Book("Terry Tibbs", "Book 3",
+                                1, "20/03/2022",
+                                "25/03/2022"));
+            }
+        });
+
 
     }
     HomeFragment homeFragment = new HomeFragment();

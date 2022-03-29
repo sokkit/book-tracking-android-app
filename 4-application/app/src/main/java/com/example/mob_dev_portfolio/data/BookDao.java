@@ -1,11 +1,13 @@
 package com.example.mob_dev_portfolio.data;
 
+import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
 import java.util.List;
 
+@Dao
 public interface BookDao {
 
     @Query("SELECT * FROM Book")
@@ -20,5 +22,7 @@ public interface BookDao {
     @Delete
     void delete(Book book);
 
+    @Query("DELETE FROM Book")
+    void deleteAllBooks();
 
 }
