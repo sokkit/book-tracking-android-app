@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -29,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -46,7 +43,7 @@ public class HomeFragment extends Fragment {
 
     public void onViewCreated(View view, @Nullable Bundle savedInstance) {
         SearchView searchView = (SearchView) getView().findViewById(R.id.searchView);
-        ArrayList<Book> books = new ArrayList<>();
+        ArrayList<BookSearch> bookSearches = new ArrayList<>();
 
 
 
@@ -69,7 +66,7 @@ public class HomeFragment extends Fragment {
                                     System.out.println("length: " + response.getJSONArray("items").length());
                                     String bookTitle;
                                     String bookAuthor;
-                                    books.clear();
+                                    bookSearches.clear();
 //                                    Add results to ListView items
                                     for (int i = 0; i < response.getJSONArray("items").length(); i++) {
                                         System.out.println(response.getJSONArray("items").getJSONObject(i));
@@ -85,11 +82,11 @@ public class HomeFragment extends Fragment {
                                             bookAuthor = "No author found";
                                         }
 //                                        add values to list
-                                        books.add(new Book(bookTitle, bookAuthor));
+                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor));
                                     }
 //                                    Add results to ListView
                                     ArrayList<String> listContent = new ArrayList<String>();
-                                    for (Book b: books) {
+                                    for (BookSearch b: bookSearches) {
                                         listContent.add(b.parseBook());
                                     }
                                     ArrayAdapter<String> la = new ArrayAdapter<String>(
@@ -103,7 +100,7 @@ public class HomeFragment extends Fragment {
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                            PopupMenu popupMenu = new PopupMenu(getContext(), lv, Gravity.CENTER_HORIZONTAL, R.attr.actionOverflowMenuStyle, 1);
+                                            PopupMenu popupMenu = new PopupMenu(getContext(), lv, Gravity.NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
                                             popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
                                             popupMenu.show();
                                         }

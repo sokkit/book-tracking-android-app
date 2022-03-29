@@ -1,11 +1,11 @@
 package com.example.mob_dev_portfolio;
 
-public class Book {
+public class BookSearch {
 
     private String title;
     private String author;
 
-    public Book(String title, String author) {
+    public BookSearch(String title, String author) {
         this.title = title;
         this.author = author;
     }
