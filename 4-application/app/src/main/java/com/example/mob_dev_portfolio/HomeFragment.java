@@ -5,12 +5,15 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +46,6 @@ public class HomeFragment extends Fragment {
 
     public void onViewCreated(View view, @Nullable Bundle savedInstance) {
         SearchView searchView = (SearchView) getView().findViewById(R.id.searchView);
-//        TextView title = (TextView) getView().findViewById(R.id.textView2);
-//        TextView author = (TextView) getView().findViewById(R.id.textView3);
         ArrayList<Book> books = new ArrayList<>();
 
 
@@ -99,6 +100,14 @@ public class HomeFragment extends Fragment {
 
                                     ListView lv = (ListView) getView().findViewById(R.id.searchResults);
                                     lv.setAdapter(la);
+                                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            PopupMenu popupMenu = new PopupMenu(getContext(), lv, Gravity.CENTER_HORIZONTAL, R.attr.actionOverflowMenuStyle, 1);
+                                            popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+                                            popupMenu.show();
+                                        }
+                                    });
                                 } catch (JSONException err) {
                                     err.printStackTrace();
                                 }
