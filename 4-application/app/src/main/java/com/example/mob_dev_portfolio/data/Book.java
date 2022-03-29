@@ -80,4 +80,14 @@ public class Book {
     public void setDateCompleted(String dateCompleted) {
         this.dateCompleted = dateCompleted;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "authors='" + authors + '\'' +
+                ", title='" + title + '\'' +
+                ", dateStarted='" + dateStarted + '\'' +
+                ", dateCompleted='" + dateCompleted + '\'' +
+                '}';
+    }
 }

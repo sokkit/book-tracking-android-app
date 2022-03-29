@@ -25,4 +25,7 @@ public interface BookDao {
     @Query("DELETE FROM Book")
     void deleteAllBooks();
 
+    @Query("SELECT * FROM Book WHERE status = :status")
+    List<Book>getBooksByStatus(int status);
+
 }
