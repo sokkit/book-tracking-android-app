@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -64,18 +65,28 @@ public class HomeFragment extends Fragment {
                             public void onResponse(JSONObject response) {
                                 try {
                                     System.out.println(response);
+                                    System.out.println("length: " + response.getJSONArray("items").length());
                                     String bookTitle;
                                     String bookAuthor;
                                     books.clear();
-                                    for (int i = 0; i < 10; i++) {
-                                        System.out.println("i: " + i);
-                                        bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
-                                        bookAuthor = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("authors");
-                                        System.out.println("title: " + bookTitle);
-                                        System.out.println("author: " + bookAuthor);
+//                                    Add results to ListView items
+                                    for (int i = 0; i < response.getJSONArray("items").length(); i++) {
+                                        System.out.println(response.getJSONArray("items").getJSONObject(i));
+//                                        if title and author exist, assign them
+                                        try {
+                                            bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
+                                        } catch (JSONException err) {
+                                            bookTitle = "Not title found";
+                                        }
+                                        try {
+                                            bookAuthor = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("authors");
+                                        } catch (JSONException err) {
+                                            bookAuthor = "No author found";
+                                        }
+//                                        add values to list
                                         books.add(new Book(bookTitle, bookAuthor));
                                     }
-
+//                                    Add results to ListView
                                     ArrayList<String> listContent = new ArrayList<String>();
                                     for (Book b: books) {
                                         listContent.add(b.parseBook());
@@ -96,6 +107,7 @@ public class HomeFragment extends Fragment {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
                             }
                         }
                 );

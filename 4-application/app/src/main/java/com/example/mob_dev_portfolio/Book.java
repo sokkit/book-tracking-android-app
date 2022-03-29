@@ -34,12 +34,12 @@ public class Book {
                 '}';
     }
 
+//    Remove unnecessary punctuation from strong provided by API
     public String parseBook() {
-        String newAuthorString = author.replaceAll("[\\[$|]|\"]", "");
-//        newAuthorString.replaceAll("\\[", "");;
-//        newAuthorString.replaceAll("]", "");
-//        newAuthorString.replace("\"", "");
-        String res = title + " by: " + newAuthorString;
+        String removePunc = author.replaceAll("[\\[$|]|\"]", "");
+        String removeSpeechmark = removePunc.replace("\"", "");
+        String spaceAfterComma = removeSpeechmark.replace(",", ", ");
+        String res = title + " by: " + spaceAfterComma;
         return res;
     }
 }
