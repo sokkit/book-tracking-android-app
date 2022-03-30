@@ -5,12 +5,18 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 
 import com.example.mob_dev_portfolio.data.Book;
 import com.example.mob_dev_portfolio.data.BookDB;
@@ -60,6 +66,19 @@ public class ReadingFragment extends Fragment {
                             ListAdapter adapter=new ListAdapter(getContext(), readingBooks);
                             ListView lv = (ListView) getView().findViewById(R.id.custom_list_reading);
                             lv.setAdapter(adapter);
+                            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                                    ref switch fragment from within fragment
+//                                    https://stackoverflow.com/a/13217087/14457259
+                                    Fragment newFragment = new BookInfoFragment();
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.container, newFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+//                                    end of reference
+                                }
+                            });
 
                         }
                     }
