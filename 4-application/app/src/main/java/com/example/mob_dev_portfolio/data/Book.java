@@ -90,4 +90,13 @@ public class Book {
                 ", dateCompleted='" + dateCompleted + '\'' +
                 '}';
     }
+
+    public String parseBook() {
+        String removePunc = authors.replaceAll("[\\[$|]|\"]", "");
+        String removeSpeechmark = removePunc.replace("\"", "");
+        String spaceAfterComma = removeSpeechmark.replace(",", ", ");
+        String res = title + " by: " + spaceAfterComma;
+        return res;
+    }
+
 }

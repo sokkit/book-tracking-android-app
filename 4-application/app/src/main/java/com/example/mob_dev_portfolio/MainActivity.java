@@ -52,7 +52,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                 "20/03/2022"),
                         new Book("Terry Tibbs", "Book 3",
                                 1, "20/03/2022",
-                                "25/03/2022"));
+                                "25/03/2022"),
+                        new Book("Joe Bloggs", "Book 4",
+                                0, "25/03/2022",
+                                null),
+                        new Book("John Barnes", "Book 5",
+                                0, "20/03/2022",
+                                null));
             }
         });
 
