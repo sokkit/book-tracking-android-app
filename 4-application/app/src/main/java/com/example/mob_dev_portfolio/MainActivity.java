@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -20,23 +21,34 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView bottomNavigationView;
-
     ExecutorService executor;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String currentBook = "currentBookKey";
+
+
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+//        Set home as default navigation area
         bottomNavigationView.setSelectedItemId(R.id.home);
 
+//        Build database which can be accessed by other fragments
         BookDB db = Room.databaseBuilder(
                 getApplicationContext(),
                 BookDB.class,
                 "book-db").build();
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putInt(currentBook, 1);
+        editor.commit();
 
         this.executor = Executors.newFixedThreadPool(4);
         executor.execute(new Runnable() {
