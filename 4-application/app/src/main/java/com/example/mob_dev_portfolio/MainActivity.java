@@ -26,8 +26,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public static final String currentBook = "currentBookKey";
 
 
-    SharedPreferences sharedpreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +42,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 getApplicationContext(),
                 BookDB.class,
                 "book-db").build();
-
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putInt(currentBook, 1);
-        editor.commit();
 
         this.executor = Executors.newFixedThreadPool(4);
         executor.execute(new Runnable() {

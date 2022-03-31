@@ -35,11 +35,8 @@ public class BookInfoFragment extends Fragment {
     }
 
     public void onViewCreated(View view, @Nullable Bundle savedInstance) {
-        SharedPreferences preferences = this.getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        int currentBook = preferences.getInt("currentBookKey", 0);
+        int currentBook = this.getArguments().getInt("current book");
         System.out.println("current book: " + currentBook);
-
-
     }
 
 }

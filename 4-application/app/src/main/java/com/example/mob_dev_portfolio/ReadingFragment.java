@@ -69,9 +69,14 @@ public class ReadingFragment extends Fragment {
                             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                                    ref switch fragment from within fragment
+
+                                    Bundle bundle = new Bundle();
+                                    int currentBook = readingBooks.get(i).getBookId();
+                                    bundle.putInt("current book", currentBook);
+//                                    ref switch fragment from within fragment. Adapted to add bundle
 //                                    https://stackoverflow.com/a/13217087/14457259
                                     Fragment newFragment = new BookInfoFragment();
+                                    newFragment.setArguments(bundle);
                                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                                     transaction.replace(R.id.container, newFragment);
                                     transaction.addToBackStack(null);

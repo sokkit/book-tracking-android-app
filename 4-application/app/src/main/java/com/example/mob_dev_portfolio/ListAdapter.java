@@ -38,6 +38,7 @@ public class ListAdapter extends ArrayAdapter<Book> {
         TextView titleText = (TextView) rowView.findViewById(R.id.reading_title);
         TextView authorsText = (TextView) rowView.findViewById(R.id.reading_authors);
         TextView dateStartedText = (TextView) rowView.findViewById(R.id.reading_date_started);
+//        TextView idText = (TextView) rowView.findViewById(R.id.read);
 
         titleText.setText(book.getTitle());
         authorsText.setText(book.getAuthors());
