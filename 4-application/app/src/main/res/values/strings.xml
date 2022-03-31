@@ -3,6 +3,12 @@
     <string name="title_text">Read Me</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Home fragment</string>
+    <string-array name="bookinfospinneroptions">
+        <item>Reading</item>
+        <item>Read</item>
+        <item>TBR</item>
+    </string-array>
+    <string name="submit_text">Submit</string>
     <string name="test_text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
 molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
 numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium

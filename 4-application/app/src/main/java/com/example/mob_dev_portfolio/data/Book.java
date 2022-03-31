@@ -99,4 +99,11 @@ public class Book {
         return res;
     }
 
+    public String parseAuthor() {
+        String removePunc = authors.replaceAll("[\\[$|]|\"]", "");
+        String removeSpeechmark = removePunc.replace("\"", "");
+        String spaceAfterComma = removeSpeechmark.replace(",", ", ");
+        return spaceAfterComma;
+    }
+
 }

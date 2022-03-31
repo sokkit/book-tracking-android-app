@@ -28,4 +28,7 @@ public interface BookDao {
     @Query("SELECT * FROM Book WHERE status = :status")
     List<Book>getBooksByStatus(int status);
 
+    @Query("SELECT * FROM Book WHERE bookId = :bookId")
+    Book getByBookId(int bookId);
+
 }
