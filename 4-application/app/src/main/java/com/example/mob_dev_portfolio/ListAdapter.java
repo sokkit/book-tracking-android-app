@@ -37,12 +37,14 @@ public class ListAdapter extends ArrayAdapter<Book> {
 
         TextView titleText = (TextView) rowView.findViewById(R.id.reading_title);
         TextView authorsText = (TextView) rowView.findViewById(R.id.reading_authors);
-        TextView dateStartedText = (TextView) rowView.findViewById(R.id.reading_date_started);
-//        TextView idText = (TextView) rowView.findViewById(R.id.read);
-
+        TextView dateText = (TextView) rowView.findViewById(R.id.reading_date);
+        if (book.getDateCompleted() != null) {
+            dateText.setText("Finished on: " + book.getDateCompleted());
+        } else {
+            dateText.setText("Started on: " + book.getDateStarted());
+        }
         titleText.setText(book.getTitle());
         authorsText.setText(book.getAuthors());
-        dateStartedText.setText(book.getDateStarted());
 
         return rowView;
     }

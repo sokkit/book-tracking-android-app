@@ -5,10 +5,12 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -57,14 +59,27 @@ public class ReadFragment extends Fragment {
 //                                add string version of book to list
                                 readBooksString.add(b.parseBook());
                             }
-                            ArrayAdapter<String> la;
-                            la = new ArrayAdapter<String>(
-                                    getContext(),
-                                    android.R.layout.simple_list_item_1,
-                                    readBooksString
-                            );
-                            ListView lv = (ListView) getView().findViewById(R.id.list_read);
-                            lv.setAdapter(la);
+                            ListAdapter adapter=new ListAdapter(getContext(), readBooks);
+                            ListView lv = (ListView) getView().findViewById(R.id.custom_list_reading);
+                            lv.setAdapter(adapter);
+                            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                                    Bundle bundle = new Bundle();
+                                    int currentBook = readBooks.get(i).getBookId();
+                                    bundle.putInt("current book", currentBook);
+//                                    ref switch fragment from within fragment. Adapted to add bundle
+//                                    https://stackoverflow.com/a/13217087/14457259
+                                    Fragment newFragment = new BookInfoFragment();
+                                    newFragment.setArguments(bundle);
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.container, newFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+//                                    end of reference
+                                }
+                            });
                         }
                     }
                 });
