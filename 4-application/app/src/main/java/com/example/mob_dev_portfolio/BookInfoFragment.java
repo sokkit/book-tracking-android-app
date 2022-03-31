@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.mob_dev_portfolio.data.Book;
@@ -18,7 +21,7 @@ import com.example.mob_dev_portfolio.data.BookDB;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BookInfoFragment extends Fragment {
+public class BookInfoFragment extends Fragment implements View.OnClickListener {
 
     ExecutorService executor;
 
@@ -62,8 +65,27 @@ public class BookInfoFragment extends Fragment {
                     public void run() {
                         TextView titleText = (TextView) getView().findViewById(R.id.book_info_title);
                         TextView authorText = (TextView) getView().findViewById(R.id.book_info_authors);
+                        Spinner readingStatus = (Spinner) getView().findViewById(R.id.book_info_status_spinner);
                         titleText.setText(bookToView.getTitle());
                         authorText.setText(bookToView.parseAuthor());
+                        Button submitButton = (Button) getView().findViewById(R.id.book_info_submit_button);
+
+
+                        submitButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                System.out.println("button clicked");
+                                String choice = readingStatus.getSelectedItem().toString();
+                                System.out.println("choice: " + choice);
+                                int newStatus = 0;
+                                if (choice.equals("Read")) {
+                                    newStatus = 1;
+                                } else if (choice.equals("TBR")) {
+                                    newStatus = 2;
+                                }
+                                db.bookDao().updateReadingStatus(newStatus, currentBook);
+                            }
+                        });
                     }
                 });
             }
@@ -71,4 +93,8 @@ public class BookInfoFragment extends Fragment {
 
     }
 
+    @Override
+    public void onClick(View view) {
+
+    }
 }

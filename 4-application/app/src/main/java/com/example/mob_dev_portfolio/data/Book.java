@@ -25,11 +25,19 @@ public class Book {
     @ColumnInfo(name = "date_completed")
     private String dateCompleted;
 
-    public Book(String authors, String title, int status, String dateStarted, String dateCompleted) {
+    @ColumnInfo(name = "review")
+    private String review;
+
+    @ColumnInfo(name = "rating")
+    private int rating;
+
+    public Book(String authors, String title, int status, String dateStarted, String dateCompleted, String review, int rating) {
         this.authors = authors;
         this.title = title;
         this.status = status;
         this.dateStarted = dateStarted;
+        this.dateCompleted = dateCompleted;
+        this.review = review;
         this.dateCompleted = dateCompleted;
     }
 
@@ -81,13 +89,33 @@ public class Book {
         this.dateCompleted = dateCompleted;
     }
 
+    public String getReview() {
+        return review;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
-                "authors='" + authors + '\'' +
+                "bookId=" + bookId +
+                ", authors='" + authors + '\'' +
                 ", title='" + title + '\'' +
+                ", status=" + status +
                 ", dateStarted='" + dateStarted + '\'' +
                 ", dateCompleted='" + dateCompleted + '\'' +
+                ", review='" + review + '\'' +
+                ", rating=" + rating +
                 '}';
     }
 

@@ -31,4 +31,7 @@ public interface BookDao {
     @Query("SELECT * FROM Book WHERE bookId = :bookId")
     Book getByBookId(int bookId);
 
+    @Query("UPDATE Book SET status = :status WHERE bookId = :bookId")
+    void updateReadingStatus(int status, int bookId);
+
 }
