@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -62,14 +63,11 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    System.out.println(response);
-                                    System.out.println("length: " + response.getJSONArray("items").length());
                                     String bookTitle;
                                     String bookAuthor;
                                     bookSearches.clear();
 //                                    Add results to ListView items
                                     for (int i = 0; i < response.getJSONArray("items").length(); i++) {
-                                        System.out.println(response.getJSONArray("items").getJSONObject(i));
 //                                        if title and author exist, assign them
                                         try {
                                             bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
@@ -100,7 +98,18 @@ public class HomeFragment extends Fragment {
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            Bundle bundle = new Bundle();
+                                            bundle.putParcelable("potential book", bookSearches.get(i));
                                             System.out.println("book" + bookSearches.get(i));
+                                            // ref switch fragment from within fragment. Adapted to add bundle
+                                            // https://stackoverflow.com/a/13217087/14457259
+                                            Fragment newFragment = new BookInfoFragment();
+                                            newFragment.setArguments(bundle);
+                                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                            transaction.replace(R.id.container, newFragment);
+                                            transaction.addToBackStack(null);
+                                            transaction.commit();
+                                            // end of reference
                                         }
                                     });
                                 } catch (JSONException err) {

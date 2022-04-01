@@ -45,51 +45,103 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onViewCreated(View view, @Nullable Bundle savedInstance) {
-        int currentBook = this.getArguments().getInt("current book");
-        System.out.println("current book: " + currentBook);
+        // If user reaches page from Reading, Read, or TBR sections
+        if (this.getArguments().containsKey("current book")) {
+            int currentBook = this.getArguments().getInt("current book");
+            System.out.println("current book: " + currentBook);
 
 //        Get book info from database
-        Context context = getContext();
-        BookDB db = BookDB.getInstance(context);
-        this.executor = Executors.newFixedThreadPool(4);
+            Context context = getContext();
+            BookDB db = BookDB.getInstance(context);
+            this.executor = Executors.newFixedThreadPool(4);
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
 //                get book using id from bundle
-                Book bookToView = db.bookDao().getByBookId(currentBook);
-                System.out.println(bookToView);
+                    Book bookToView = db.bookDao().getByBookId(currentBook);
+                    System.out.println(bookToView);
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView titleText = (TextView) getView().findViewById(R.id.book_info_title);
-                        TextView authorText = (TextView) getView().findViewById(R.id.book_info_authors);
-                        Spinner readingStatus = (Spinner) getView().findViewById(R.id.book_info_status_spinner);
-                        titleText.setText(bookToView.getTitle());
-                        authorText.setText(bookToView.parseAuthor());
-                        Button submitButton = (Button) getView().findViewById(R.id.book_info_submit_button);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView titleText = (TextView) getView().findViewById(R.id.book_info_title);
+                            TextView authorText = (TextView) getView().findViewById(R.id.book_info_authors);
+                            Spinner readingStatus = (Spinner) getView().findViewById(R.id.book_info_status_spinner);
+                            titleText.setText(bookToView.getTitle());
+                            authorText.setText(bookToView.parseAuthor());
+                            Button submitButton = (Button) getView().findViewById(R.id.book_info_submit_button);
 
 
-                        submitButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                System.out.println("button clicked");
-                                String choice = readingStatus.getSelectedItem().toString();
-                                System.out.println("choice: " + choice);
-                                int newStatus = 0;
-                                if (choice.equals("Read")) {
-                                    newStatus = 1;
-                                } else if (choice.equals("TBR")) {
-                                    newStatus = 2;
+                            submitButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    System.out.println("button clicked");
+                                    String choice = readingStatus.getSelectedItem().toString();
+                                    System.out.println("choice: " + choice);
+                                    int newStatus = 0;
+                                    if (choice.equals("Read")) {
+                                        newStatus = 1;
+                                    } else if (choice.equals("TBR")) {
+                                        newStatus = 2;
+                                    }
+                                    db.bookDao().updateReadingStatus(newStatus, currentBook);
                                 }
-                                db.bookDao().updateReadingStatus(newStatus, currentBook);
-                            }
-                        });
-                    }
-                });
-            }
-        });
+                            });
+                        }
+                    });
+                }
+            });
+            // If user reaches page from home page
+        } else if (this.getArguments().containsKey("potential book")) {
+            BookSearch currentBook = this.getArguments().getParcelable("potential book");
+            System.out.println("current book: " + currentBook);
+
+//        Get book info from database
+            Context context = getContext();
+            BookDB db = BookDB.getInstance(context);
+            this.executor = Executors.newFixedThreadPool(4);
+
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+//                get book using id from bundle
+                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0);
+                    System.out.println(bookToView);
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView titleText = (TextView) getView().findViewById(R.id.book_info_title);
+                            TextView authorText = (TextView) getView().findViewById(R.id.book_info_authors);
+                            Spinner readingStatus = (Spinner) getView().findViewById(R.id.book_info_status_spinner);
+                            titleText.setText(bookToView.getTitle());
+                            authorText.setText(bookToView.parseAuthor());
+                            Button submitButton = (Button) getView().findViewById(R.id.book_info_submit_button);
+
+
+                            submitButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    System.out.println("button clicked");
+                                    String choice = readingStatus.getSelectedItem().toString();
+                                    System.out.println("choice: " + choice);
+                                    int newStatus = 0;
+                                    if (choice.equals("Read")) {
+                                        newStatus = 1;
+                                    } else if (choice.equals("TBR")) {
+                                        newStatus = 2;
+                                    }
+                                    bookToView.setStatus(newStatus);
+                                    db.bookDao().insertAll(bookToView);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
 
     }
 
