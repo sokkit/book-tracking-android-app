@@ -38,11 +38,16 @@ public class ListAdapter extends ArrayAdapter<Book> {
         TextView titleText = (TextView) rowView.findViewById(R.id.reading_title);
         TextView authorsText = (TextView) rowView.findViewById(R.id.reading_authors);
         TextView dateText = (TextView) rowView.findViewById(R.id.reading_date);
-        if (book.getDateCompleted() != null) {
-            dateText.setText("Finished on: " + book.getDateCompleted());
-        } else if (book.getDateCompleted() != null && book.getStatus() == 0){
+        if (book.getStatus() == 0) {
             dateText.setText("Started on: " + book.getDateStarted());
+        } else if (book.getStatus() == 1) {
+            dateText.setText("Finished on " + book.getDateCompleted());
         }
+//        if (book.getDateCompleted() != null) {
+//            dateText.setText("Finished on: " + book.getDateCompleted());
+//        } else if (book.getDateCompleted() != null && book.getStatus() == 0){
+//            dateText.setText("Started on: " + book.getDateStarted());
+//        }
         titleText.setText(book.getTitle());
         authorsText.setText(book.getAuthors());
 
