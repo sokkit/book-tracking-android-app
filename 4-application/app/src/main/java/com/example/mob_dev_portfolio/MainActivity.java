@@ -49,21 +49,27 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             public void run() {
                 db.bookDao().deleteAllBooks();
                 db.bookDao().insertAll(
-                        new Book("John Barnes", "Book 1",
+                        new Book("Thomas Pynchon", "Mason & Dixon",
                                 1, "01/03/2022",
-                                "15/03/2022", "Review", 8),
-                        new Book("Paula Poundstone", "Book 2",
+                                "15/03/2022", "Good book lol", 8),
+                        new Book("Hunter S Thompson", "Fear and Loathing in Las Vegas",
                                 1, "15/03/2022",
-                                "20/03/2022", "Review", 8),
-                        new Book("Terry Tibbs", "Book 3",
+                                "20/03/2022", "Very good haha", 8),
+                        new Book("Franz Kafka", "The Metamorphosis",
                                 1, "20/03/2022",
-                                "25/03/2022", "Review", 8),
-                        new Book("Joe Bloggs", "Book 4",
+                                "25/03/2022", "Weird book", 9),
+                        new Book("Robert Louis Stevenson", "The Strange Case of Dr Jekyll and Mr Hyde",
                                 0, "25/03/2022",
-                                null, "A Review", 8),
-                        new Book("John Barnes", "Book 5",
+                                null, "", 0),
+                        new Book("David Foster Wallace", "Infinite Jest",
                                 0, "20/03/2022",
-                                null, "A Review", 8));
+                                null, "", 0),
+                        new Book("Haruki Murakami", "Kafka on the Shore", 2,
+                                null, null, "", 0),
+                        new Book("Thomas Pynchon", "Vineland", 2, "null",
+                                "null", "", 0),
+                        new Book("Richard Gott", "Cuba: A New History", 2,
+                                null, null, "", 0));
             }
         });
 

@@ -100,9 +100,7 @@ public class HomeFragment extends Fragment {
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                            PopupMenu popupMenu = new PopupMenu(getContext(), lv, Gravity.NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
-                                            popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
-                                            popupMenu.show();
+                                            System.out.println("book" + bookSearches.get(i));
                                         }
                                     });
                                 } catch (JSONException err) {

@@ -40,7 +40,7 @@ public class ListAdapter extends ArrayAdapter<Book> {
         TextView dateText = (TextView) rowView.findViewById(R.id.reading_date);
         if (book.getDateCompleted() != null) {
             dateText.setText("Finished on: " + book.getDateCompleted());
-        } else {
+        } else if (book.getDateCompleted() != null && book.getStatus() == 0){
             dateText.setText("Started on: " + book.getDateStarted());
         }
         titleText.setText(book.getTitle());
