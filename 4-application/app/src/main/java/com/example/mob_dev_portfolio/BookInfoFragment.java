@@ -57,6 +57,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         Button submitButton = (Button) getView().findViewById(R.id.book_info_submit_button);
         EditText dateStarted = (EditText) getView().findViewById(R.id.date_started);
         EditText dateCompleted = (EditText) getView().findViewById(R.id.date_completed);
+        EditText review = (EditText) getView().findViewById(R.id.book_info_review);
 
         // Reference - Expandable calendar combined with EditText
         // Taken from https://www.techypid.com/datepicker-dialog-click-on-edittext-in-android/
@@ -121,7 +122,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
+                            review.setText(bookToView.getReview());
                             titleText.setText(bookToView.getTitle());
                             authorText.setText(bookToView.parseAuthor());
 
@@ -137,6 +138,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
+                                    db.bookDao().updateReview(review.getText().toString(), currentBook);
                                     db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
                                     db.bookDao().updateDateStarted(dateCompleted.getText().toString(), currentBook);
                                     db.bookDao().updateReadingStatus(newStatus, currentBook);
@@ -146,6 +148,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                     });
                 }
             });
+
 
             // If user reaches page from home page
         } else if (this.getArguments().containsKey("potential book")) {
@@ -174,12 +177,14 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void onClick(View view) {
                                     String choice = readingStatus.getSelectedItem().toString();
+                                    // update reading status from spinner
                                     int newStatus = 0;
                                     if (choice.equals("Read")) {
                                         newStatus = 1;
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
+                                    bookToView.setReview(review.getText().toString());
                                     bookToView.setStatus(newStatus);
                                     bookToView.setDateStarted(dateStarted.getText().toString());
                                     bookToView.setDateCompleted(dateCompleted.getText().toString());
