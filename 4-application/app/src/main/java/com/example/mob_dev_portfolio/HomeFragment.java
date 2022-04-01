@@ -53,8 +53,6 @@ public class HomeFragment extends Fragment {
             @Override
             //Query API and display results on search submit
             public boolean onQueryTextSubmit(String s) {
-
-                Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                 String API_KEY = "AIzaSyDbNPjEszabwPq-xMd3sNTUIaXp9A5IbDA";
                 String url = "https://www.googleapis.com/books/v1/volumes?q=";
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext()); //getContext() might be wrong
