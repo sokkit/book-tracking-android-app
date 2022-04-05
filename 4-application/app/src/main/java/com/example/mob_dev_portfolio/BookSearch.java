@@ -1,11 +1,14 @@
 package com.example.mob_dev_portfolio;
 
-public class Book {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class BookSearch implements Parcelable {
 
     private String title;
     private String author;
 
-    public Book(String title, String author) {
+    public BookSearch(String title, String author) {
         this.title = title;
         this.author = author;
     }
@@ -41,5 +44,22 @@ public class Book {
         String spaceAfterComma = removeSpeechmark.replace(",", ", ");
         String res = title + " by: " + spaceAfterComma;
         return res;
+    }
+
+    public String parseAuthor() {
+        String removePunc = author.replaceAll("[\\[$|]|\"]", "");
+        String removeSpeechmark = removePunc.replace("\"", "");
+        String spaceAfterComma = removeSpeechmark.replace(",", ", ");
+        return spaceAfterComma;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
     }
 }
