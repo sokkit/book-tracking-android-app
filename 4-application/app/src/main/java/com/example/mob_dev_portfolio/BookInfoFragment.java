@@ -7,24 +7,47 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mob_dev_portfolio.data.Book;
 import com.example.mob_dev_portfolio.data.BookDB;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
 
 public class BookInfoFragment extends Fragment implements View.OnClickListener {
 
@@ -158,6 +181,49 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     db.bookDao().updateRating(rating.getRating(), currentBook);
                                 }
                             });
+
+                            // Get suggested quotes
+                            //  Reference - Accept all certificates as website which provides API does not
+                            // provide intermediate certificate
+                            // https://stackoverflow.com/a/5297100/14457259
+                            try {
+                                HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier(){
+                                    public boolean verify(String hostname, SSLSession session) {
+                                        return true;
+                                    }});
+                                SSLContext context = SSLContext.getInstance("TLS");
+                                context.init(null, new X509TrustManager[]{new X509TrustManager(){
+                                    public void checkClientTrusted(X509Certificate[] chain,
+                                                                   String authType) throws CertificateException {}
+                                    public void checkServerTrusted(X509Certificate[] chain,
+                                                                   String authType) throws CertificateException {}
+                                    public X509Certificate[] getAcceptedIssuers() {
+                                        return new X509Certificate[0];
+                                    }}}, new SecureRandom());
+                                HttpsURLConnection.setDefaultSSLSocketFactory(
+                                        context.getSocketFactory());
+                            } catch (Exception e) { // should never happen
+                                e.printStackTrace();
+                            }
+                            // End of reference
+                            String url = "https://goodquotesapi.herokuapp.com/title/";
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            StringRequest getRequest = new StringRequest(Request.Method.GET, "https://goodquotesapi.herokuapp.com/title/the+metamorphosis",
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            System.out.println("got response");
+                                            System.out.println(response);
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            error.printStackTrace();
+                                        }
+                                    }
+                            );
+                            requestQueue.add(getRequest);
                         }
                     });
                 }
@@ -167,8 +233,6 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
             // If user reaches page from home page
         } else if (this.getArguments().containsKey("potential book")) {
             BookSearch currentBook = this.getArguments().getParcelable("potential book");
-            System.out.println("current book: " + currentBook);
-
 //        Get book info from database
             Context context = getContext();
             BookDB db = BookDB.getInstance(context);
