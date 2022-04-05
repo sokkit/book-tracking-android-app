@@ -128,6 +128,14 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             titleText.setText(bookToView.getTitle());
                             authorText.setText(bookToView.parseAuthor());
                             rating.setRating(bookToView.getRating());
+                            readingStatus.setSelection(bookToView.getStatus());
+
+                            if (dateStarted != null) {
+                                dateStarted.setText(bookToView.getDateStarted());
+                            }
+                            if (dateCompleted != null) {
+                                dateCompleted.setText(bookToView.getDateCompleted());
+                            }
 
                             submitButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -141,11 +149,11 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
-                                    Float ratingvalue = (Float) rating.getRating();
-                                    System.out.println("rating: " + ratingvalue);
+                                    Float ratingValue = (Float) rating.getRating();
+                                    System.out.println("rating: " + ratingValue);
                                     db.bookDao().updateReview(review.getText().toString(), currentBook);
                                     db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
-                                    db.bookDao().updateDateStarted(dateCompleted.getText().toString(), currentBook);
+                                    db.bookDao().updateDateCompleted(dateCompleted.getText().toString(), currentBook);
                                     db.bookDao().updateReadingStatus(newStatus, currentBook);
                                     db.bookDao().updateRating(rating.getRating(), currentBook);
                                 }
