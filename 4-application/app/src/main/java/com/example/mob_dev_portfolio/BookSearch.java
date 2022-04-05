@@ -7,10 +7,14 @@ public class BookSearch implements Parcelable {
 
     private String title;
     private String author;
+    private String isbn;
+    private String smallThumbnail;
 
-    public BookSearch(String title, String author) {
+    public BookSearch(String title, String author, String isbn, String smallThumbnail) {
         this.title = title;
         this.author = author;
+        this.isbn = isbn;
+        this.smallThumbnail = smallThumbnail;
     }
 
     public String getTitle() {
@@ -27,6 +31,22 @@ public class BookSearch implements Parcelable {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getSmallThumbnail() {
+        return smallThumbnail;
+    }
+
+    public void setSmallThumbnail(String smallThumbnail) {
+        this.smallThumbnail = smallThumbnail;
     }
 
     @Override

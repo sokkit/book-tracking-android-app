@@ -56,16 +56,19 @@ public class HomeFragment extends Fragment {
                 String API_KEY = "AIzaSyDbNPjEszabwPq-xMd3sNTUIaXp9A5IbDA";
                 String url = "https://www.googleapis.com/books/v1/volumes?q=";
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext()); //getContext() might be wrong
-                JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, "https://www.googleapis.com/books/v1/volumes?q=" + s, null,
+                JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, "https://www.googleapis.com/books/v1/volumes?q=" + s + "&printType=books", null,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
                                     String bookTitle;
                                     String bookAuthor;
+                                    String isbn;
+                                    String smallThumbnail;
                                     bookSearches.clear();
 //                                    Add results to ListView items
                                     for (int i = 0; i < response.getJSONArray("items").length(); i++) {
+                                        System.out.println(response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title"));
 //                                        if title and author exist, assign them
                                         try {
                                             bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
@@ -77,8 +80,19 @@ public class HomeFragment extends Fragment {
                                         } catch (JSONException err) {
                                             bookAuthor = "No author found";
                                         }
+                                        try {
+                                            isbn = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("industryIdentifiers").getJSONObject(0).getString("identifier");
+                                        } catch (JSONException err) {
+                                            isbn = "";
+                                        }
+                                        try {
+                                            smallThumbnail = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("smallThumbnail");
+                                            System.out.println(smallThumbnail);
+                                        } catch (JSONException err) {
+                                            smallThumbnail = "";
+                                        }
 //                                        add values to list
-                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor));
+                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, smallThumbnail));
                                     }
 //                                    Add results to ListView
                                     ArrayList<String> listContent = new ArrayList<String>();
