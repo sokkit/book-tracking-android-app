@@ -43,4 +43,7 @@ public interface BookDao {
     @Query("UPDATE Book SET review = :review WHERE bookId = :bookId")
     void updateReview(String review, int bookId);
 
+    @Query("UPDATE Book SET rating = :rating WHERE bookId = :bookId")
+    void updateRating(float rating, int bookId);
+
 }

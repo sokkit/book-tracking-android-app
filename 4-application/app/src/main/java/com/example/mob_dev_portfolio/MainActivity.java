@@ -51,25 +51,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 db.bookDao().insertAll(
                         new Book("Thomas Pynchon", "Mason & Dixon",
                                 1, "01/03/2022",
-                                "15/03/2022", "Good book lol", 8),
+                                "15/03/2022", "Good book lol", 4.0F),
                         new Book("Hunter S Thompson", "Fear and Loathing in Las Vegas",
                                 1, "15/03/2022",
-                                "20/03/2022", "Very good haha", 8),
+                                "20/03/2022", "Very good haha", 4.0F),
                         new Book("Franz Kafka", "The Metamorphosis",
                                 1, "20/03/2022",
-                                "25/03/2022", "Weird book", 9),
+                                "25/03/2022", "Weird book", 4.5F),
                         new Book("Robert Louis Stevenson", "The Strange Case of Dr Jekyll and Mr Hyde",
                                 0, "25/03/2022",
-                                null, "", 0),
+                                null, "", 0.0F),
                         new Book("David Foster Wallace", "Infinite Jest",
                                 0, "20/03/2022",
-                                null, "", 0),
+                                null, "", 0F),
                         new Book("Haruki Murakami", "Kafka on the Shore", 2,
-                                null, null, "", 0),
+                                null, null, "", 0.0F),
                         new Book("Thomas Pynchon", "Vineland", 2, "null",
                                 "null", "", 0),
                         new Book("Richard Gott", "Cuba: A New History", 2,
-                                null, null, "", 0));
+                                null, null, "", 0.0F));
             }
         });
 

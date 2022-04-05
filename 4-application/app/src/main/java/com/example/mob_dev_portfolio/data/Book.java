@@ -29,9 +29,9 @@ public class Book {
     private String review;
 
     @ColumnInfo(name = "rating")
-    private int rating;
+    private float rating;
 
-    public Book(String authors, String title, int status, String dateStarted, String dateCompleted, String review, int rating) {
+    public Book(String authors, String title, int status, String dateStarted, String dateCompleted, String review, float rating) {
         this.authors = authors;
         this.title = title;
         this.status = status;
@@ -39,6 +39,7 @@ public class Book {
         this.dateCompleted = dateCompleted;
         this.review = review;
         this.dateCompleted = dateCompleted;
+        this.rating = rating;
     }
 
     public int getBookId() {
@@ -97,11 +98,11 @@ public class Book {
         this.review = review;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 

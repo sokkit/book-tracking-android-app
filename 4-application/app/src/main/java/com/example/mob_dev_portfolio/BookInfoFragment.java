@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -58,6 +59,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         EditText dateStarted = (EditText) getView().findViewById(R.id.date_started);
         EditText dateCompleted = (EditText) getView().findViewById(R.id.date_completed);
         EditText review = (EditText) getView().findViewById(R.id.book_info_review);
+        RatingBar rating = (RatingBar) getView().findViewById(R.id.book_info_rating);
 
         // Reference - Expandable calendar combined with EditText
         // Taken from https://www.techypid.com/datepicker-dialog-click-on-edittext-in-android/
@@ -125,6 +127,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             review.setText(bookToView.getReview());
                             titleText.setText(bookToView.getTitle());
                             authorText.setText(bookToView.parseAuthor());
+                            rating.setRating(bookToView.getRating());
 
                             submitButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -138,10 +141,13 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
+                                    Float ratingvalue = (Float) rating.getRating();
+                                    System.out.println("rating: " + ratingvalue);
                                     db.bookDao().updateReview(review.getText().toString(), currentBook);
                                     db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
                                     db.bookDao().updateDateStarted(dateCompleted.getText().toString(), currentBook);
                                     db.bookDao().updateReadingStatus(newStatus, currentBook);
+                                    db.bookDao().updateRating(rating.getRating(), currentBook);
                                 }
                             });
                         }
@@ -188,6 +194,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     bookToView.setStatus(newStatus);
                                     bookToView.setDateStarted(dateStarted.getText().toString());
                                     bookToView.setDateCompleted(dateCompleted.getText().toString());
+                                    bookToView.setRating(rating.getRating());
                                     db.bookDao().insertAll(bookToView);
                                 }
                             });

@@ -66,7 +66,7 @@
         app:layout_constraintTop_toTopOf="parent"></EditText>
 
     <RatingBar
-        android:id="@+id/ratingBar"
+        android:id="@+id/book_info_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="250dp"
@@ -86,7 +86,7 @@
         android:lines="9"
         android:maxLength="5000"
         android:maxLines="9"
-        android:text="Review"
+        android:hint="Add Review"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
