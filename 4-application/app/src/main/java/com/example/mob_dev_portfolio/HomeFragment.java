@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment {
                                     String bookTitle;
                                     String bookAuthor;
                                     String isbn;
-                                    String smallThumbnail;
+                                    String thumbnail;
                                     bookSearches.clear();
 //                                    Add results to ListView items
                                     for (int i = 0; i < response.getJSONArray("items").length(); i++) {
@@ -86,13 +86,17 @@ public class HomeFragment extends Fragment {
                                             isbn = "";
                                         }
                                         try {
-                                            smallThumbnail = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("smallThumbnail");
-                                            System.out.println(smallThumbnail);
+                                            thumbnail = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail");
+                                            StringBuilder sb = new StringBuilder(thumbnail);
+                                            sb.insert(4,'s');
+                                            thumbnail = sb.toString();
+                                            System.out.println(sb.toString());
+                                            System.out.println(thumbnail);
                                         } catch (JSONException err) {
-                                            smallThumbnail = "";
+                                            thumbnail = "";
                                         }
 //                                        add values to list
-                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, smallThumbnail));
+                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail));
                                     }
 //                                    Add results to ListView
                                     ArrayList<String> listContent = new ArrayList<String>();

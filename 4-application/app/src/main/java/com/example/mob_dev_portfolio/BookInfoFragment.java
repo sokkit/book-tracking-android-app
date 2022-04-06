@@ -15,12 +15,14 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.mob_dev_portfolio.data.Book;
 import com.example.mob_dev_portfolio.data.BookDB;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
@@ -60,6 +62,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         EditText dateCompleted = (EditText) getView().findViewById(R.id.date_completed);
         EditText review = (EditText) getView().findViewById(R.id.book_info_review);
         RatingBar rating = (RatingBar) getView().findViewById(R.id.book_info_rating);
+        ImageView smallCover = (ImageView) getView().findViewById(R.id.book_info_small_cover);
 
         // Reference - Expandable calendar combined with EditText
         // Taken from https://www.techypid.com/datepicker-dialog-click-on-edittext-in-android/
@@ -129,6 +132,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             authorText.setText(bookToView.parseAuthor());
                             rating.setRating(bookToView.getRating());
                             readingStatus.setSelection(bookToView.getStatus());
+                            Picasso.get().load(bookToView.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
 
                             if (dateStarted != null) {
                                 dateStarted.setText(bookToView.getDateStarted());
@@ -168,6 +172,8 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         } else if (this.getArguments().containsKey("potential book")) {
             BookSearch currentBook = this.getArguments().getParcelable("potential book");
             System.out.println("current book: " + currentBook);
+            System.out.println(currentBook.getThumbnail());
+            Picasso.get().load(currentBook.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
 
 //        Get book info from database
             Context context = getContext();
@@ -178,7 +184,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
 //                get book using id from bundle
-                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0);
+                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0, currentBook.getThumbnail());
                     System.out.println(bookToView);
 
                     getActivity().runOnUiThread(new Runnable() {

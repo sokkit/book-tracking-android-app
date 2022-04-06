@@ -51,25 +51,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 db.bookDao().insertAll(
                         new Book("Thomas Pynchon", "Mason & Dixon",
                                 1, "1/3/2022",
-                                "15/3/2022", "Good book lol", 4.0F),
+                                "15/3/2022", "Good book lol", 4.0F, "https://books.google.com/books/content?id=xAYD5jMNRzMC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"),
                         new Book("Hunter S Thompson", "Fear and Loathing in Las Vegas",
                                 1, "15/3/2022",
-                                "20/3/2022", "Very good haha", 4.0F),
+                                "20/3/2022", "Very good haha", 4.0F, "https://books.google.com/books/content?id=R11qaqN4jzQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"),
                         new Book("Franz Kafka", "The Metamorphosis",
                                 1, "20/3/2022",
-                                "25/3/2022", "Weird book", 4.5F),
+                                "25/3/2022", "Weird book", 4.5F, "https://books.google.com/books/content?id=p2opDwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"),
                         new Book("Robert Louis Stevenson", "The Strange Case of Dr Jekyll and Mr Hyde",
                                 0, "25/3/2022",
-                                null, "", 0.0F),
+                                null, "", 0.0F, "https://books.google.com/books/content?id=yl1oAwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"),
                         new Book("David Foster Wallace", "Infinite Jest",
                                 0, "20/3/2022",
-                                null, "", 0F),
+                                null, "", 0F, "https://books.google.com/books/content?id=9uXSayGPlgYC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"),
                         new Book("Haruki Murakami", "Kafka on the Shore", 2,
-                                null, null, "", 0.0F),
+                                null, null, "", 0.0F, "https://books.google.com/books/content?id=L6AtuutQHpwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"),
                         new Book("Thomas Pynchon", "Vineland", 2, "null",
-                                "null", "", 0),
+                                "null", "", 0, "https://books.google.com/books/content?id=LIpPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"),
                         new Book("Richard Gott", "Cuba: A New History", 2,
-                                null, null, "", 0.0F));
+                                null, null, "", 0.0F, "https://books.google.com/books/content?id=aVq0qOnLFusC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"));
             }
         });
 

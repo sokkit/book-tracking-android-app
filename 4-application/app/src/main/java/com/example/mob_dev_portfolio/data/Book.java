@@ -31,7 +31,10 @@ public class Book {
     @ColumnInfo(name = "rating")
     private float rating;
 
-    public Book(String authors, String title, int status, String dateStarted, String dateCompleted, String review, float rating) {
+    @ColumnInfo(name = "thumbnail")
+    private String thumbnail;
+
+    public Book(String authors, String title, int status, String dateStarted, String dateCompleted, String review, float rating, String thumbnail) {
         this.authors = authors;
         this.title = title;
         this.status = status;
@@ -40,6 +43,7 @@ public class Book {
         this.review = review;
         this.dateCompleted = dateCompleted;
         this.rating = rating;
+        this.thumbnail = thumbnail;
     }
 
     public int getBookId() {
@@ -104,6 +108,14 @@ public class Book {
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     @Override
