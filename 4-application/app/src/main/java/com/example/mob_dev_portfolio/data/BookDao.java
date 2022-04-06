@@ -46,4 +46,13 @@ public interface BookDao {
     @Query("UPDATE Book SET rating = :rating WHERE bookId = :bookId")
     void updateRating(float rating, int bookId);
 
+    @Query("SELECT * FROM Quote")
+    List<Quote> getAllQuotes();
+
+    @Insert
+    void insertAll(Quote... quotes);
+
+    @Query("SELECT * FROM Quote WHERE bookId = :id")
+    List<Quote>getQuotesByBookId(int id);
+
 }

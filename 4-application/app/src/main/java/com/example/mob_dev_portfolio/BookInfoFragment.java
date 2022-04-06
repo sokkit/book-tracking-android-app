@@ -13,19 +13,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.mob_dev_portfolio.data.Book;
 import com.example.mob_dev_portfolio.data.BookDB;
+import com.example.mob_dev_portfolio.data.Quote;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -66,6 +72,17 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         RatingBar rating = (RatingBar) getView().findViewById(R.id.book_info_rating);
         ImageView smallCover = (ImageView) getView().findViewById(R.id.book_info_small_cover);
         TextView descriptionText = (TextView) getView().findViewById(R.id.book_info_description);
+        TextView quoteHeading = (TextView) getView().findViewById(R.id.book_info_quotes_heading);
+        EditText quoteEditText = (EditText) getView().findViewById(R.id.book_info_quote_edit_text);
+        Button quoteButton = (Button) getView().findViewById(R.id.book_info_add_quote_button);
+        ListView quoteListView = (ListView) getView().findViewById(R.id.book_info_quote_list);
+
+        // Hide quote section if book isn't in collection
+        if (this.getArguments().containsKey("potential book")) {
+            quoteHeading.setVisibility(View.GONE);
+            quoteEditText.setVisibility(View.GONE);
+            quoteButton.setVisibility(View.GONE);
+        }
 
         // Reference - Expandable calendar combined with EditText
         // Taken from https://www.techypid.com/datepicker-dialog-click-on-edittext-in-android/
@@ -113,8 +130,6 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         // If user reaches page from Reading, Read, or TBR sections
         if (this.getArguments().containsKey("current book")) {
             int currentBook = this.getArguments().getInt("current book");
-            System.out.println("current book: " + currentBook);
-
 //        Get book info from database
             Context context = getContext();
             BookDB db = BookDB.getInstance(context);
@@ -123,9 +138,23 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
-//                get book using id from bundle
+                    List<Quote> quoteList;
+                    // get book using id from bundle
                     Book bookToView = db.bookDao().getByBookId(currentBook);
-                    System.out.println(bookToView);
+                    // Get quotes from book id
+                    quoteList = db.bookDao().getQuotesByBookId(currentBook);
+                    System.out.println(quoteList);
+                    // Add quotes to list
+                    ArrayList<String> listContent = new ArrayList<String>();
+                    for (Quote q: quoteList) {
+                        listContent.add(q.getQuote());
+                    }
+                    ArrayAdapter<String> la = new ArrayAdapter<String>(
+                            getContext(),
+                            android.R.layout.simple_list_item_1,
+                            listContent
+                    );
+                    quoteListView.setAdapter(la);
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -149,9 +178,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             submitButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    System.out.println("button clicked");
                                     String choice = readingStatus.getSelectedItem().toString();
-                                    System.out.println("choice: " + choice);
                                     int newStatus = 0;
                                     if (choice.equals("Read")) {
                                         newStatus = 1;
@@ -159,12 +186,22 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                         newStatus = 2;
                                     }
                                     Float ratingValue = (Float) rating.getRating();
-                                    System.out.println("rating: " + ratingValue);
                                     db.bookDao().updateReview(review.getText().toString(), currentBook);
                                     db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
                                     db.bookDao().updateDateCompleted(dateCompleted.getText().toString(), currentBook);
                                     db.bookDao().updateReadingStatus(newStatus, currentBook);
-                                    db.bookDao().updateRating(rating.getRating(), currentBook);
+                                    db.bookDao().updateRating(ratingValue, currentBook);
+                                }
+                            });
+                            quoteButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String quoteToAdd = quoteEditText.getText().toString();
+                                    System.out.println("quote: " + quoteToAdd);
+                                    System.out.println("submitted quote for: " + currentBook);
+                                    Quote dbQuote = new Quote(currentBook, quoteToAdd);
+                                    db.bookDao().insertAll(dbQuote);
+                                    la.notifyDataSetChanged();
                                 }
                             });
                         }
@@ -176,8 +213,6 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
             // If user reaches page from home page
         } else if (this.getArguments().containsKey("potential book")) {
             BookSearch currentBook = this.getArguments().getParcelable("potential book");
-            System.out.println("current book: " + currentBook);
-            System.out.println(currentBook.getThumbnail());
             Picasso.get().load(currentBook.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
 
 //        Get book info from database
@@ -190,8 +225,6 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                 public void run() {
 //                get book using id from bundle
                     Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0, currentBook.getThumbnail(), currentBook.getDescription());
-                    System.out.println(bookToView);
-
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
