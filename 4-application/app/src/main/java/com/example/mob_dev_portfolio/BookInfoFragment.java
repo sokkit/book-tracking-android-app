@@ -63,6 +63,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         EditText review = (EditText) getView().findViewById(R.id.book_info_review);
         RatingBar rating = (RatingBar) getView().findViewById(R.id.book_info_rating);
         ImageView smallCover = (ImageView) getView().findViewById(R.id.book_info_small_cover);
+        TextView descriptionText = (TextView) getView().findViewById(R.id.book_info_description);
 
         // Reference - Expandable calendar combined with EditText
         // Taken from https://www.techypid.com/datepicker-dialog-click-on-edittext-in-android/
@@ -127,12 +128,14 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            Picasso.get().load(bookToView.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
                             review.setText(bookToView.getReview());
                             titleText.setText(bookToView.getTitle());
                             authorText.setText(bookToView.parseAuthor());
                             rating.setRating(bookToView.getRating());
                             readingStatus.setSelection(bookToView.getStatus());
-                            Picasso.get().load(bookToView.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
+                            descriptionText.setText(bookToView.getDescription());
+
 
                             if (dateStarted != null) {
                                 dateStarted.setText(bookToView.getDateStarted());
@@ -184,7 +187,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
 //                get book using id from bundle
-                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0, currentBook.getThumbnail());
+                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0, currentBook.getThumbnail(), currentBook.getDescription());
                     System.out.println(bookToView);
 
                     getActivity().runOnUiThread(new Runnable() {
@@ -192,6 +195,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                         public void run() {
                             titleText.setText(bookToView.getTitle());
                             authorText.setText(bookToView.parseAuthor());
+                            descriptionText.setText(bookToView.getDescription());
 
                             submitButton.setOnClickListener(new View.OnClickListener() {
                                 @Override

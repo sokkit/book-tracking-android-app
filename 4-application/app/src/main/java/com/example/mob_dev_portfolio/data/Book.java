@@ -34,7 +34,10 @@ public class Book {
     @ColumnInfo(name = "thumbnail")
     private String thumbnail;
 
-    public Book(String authors, String title, int status, String dateStarted, String dateCompleted, String review, float rating, String thumbnail) {
+    @ColumnInfo(name = "description")
+    private String description;
+
+    public Book(String authors, String title, int status, String dateStarted, String dateCompleted, String review, float rating, String thumbnail, String description) {
         this.authors = authors;
         this.title = title;
         this.status = status;
@@ -44,6 +47,7 @@ public class Book {
         this.dateCompleted = dateCompleted;
         this.rating = rating;
         this.thumbnail = thumbnail;
+        this.description = description;
     }
 
     public int getBookId() {
@@ -112,6 +116,14 @@ public class Book {
 
     public String getThumbnail() {
         return thumbnail;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setThumbnail(String thumbnail) {

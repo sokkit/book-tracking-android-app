@@ -65,6 +65,7 @@ public class HomeFragment extends Fragment {
                                     String bookAuthor;
                                     String isbn;
                                     String thumbnail;
+                                    String description;
                                     bookSearches.clear();
 //                                    Add results to ListView items
                                     for (int i = 0; i < response.getJSONArray("items").length(); i++) {
@@ -87,16 +88,21 @@ public class HomeFragment extends Fragment {
                                         }
                                         try {
                                             thumbnail = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail");
+                                            // turn url into https
                                             StringBuilder sb = new StringBuilder(thumbnail);
                                             sb.insert(4,'s');
                                             thumbnail = sb.toString();
-                                            System.out.println(sb.toString());
-                                            System.out.println(thumbnail);
                                         } catch (JSONException err) {
                                             thumbnail = "";
                                         }
+                                        try {
+                                            description = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("description");
+                                        } catch (JSONException err) {
+                                            err.printStackTrace();
+                                            description = "";
+                                        }
 //                                        add values to list
-                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail));
+                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail, description));
                                     }
 //                                    Add results to ListView
                                     ArrayList<String> listContent = new ArrayList<String>();
@@ -116,7 +122,6 @@ public class HomeFragment extends Fragment {
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                             Bundle bundle = new Bundle();
                                             bundle.putParcelable("potential book", bookSearches.get(i));
-                                            System.out.println("book" + bookSearches.get(i));
                                             // ref switch fragment from within fragment. Adapted to add bundle
                                             // https://stackoverflow.com/a/13217087/14457259
                                             Fragment newFragment = new BookInfoFragment();
