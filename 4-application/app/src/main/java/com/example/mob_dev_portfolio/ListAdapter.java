@@ -42,12 +42,9 @@ public class ListAdapter extends ArrayAdapter<Book> {
             dateText.setText("Started on: " + book.getDateStarted());
         } else if (book.getStatus() == 1) {
             dateText.setText("Finished on " + book.getDateCompleted());
+        } else if (book.getStatus() == 2) {
+            dateText.setText("Added on " + book.getDateAdded());
         }
-//        if (book.getDateCompleted() != null) {
-//            dateText.setText("Finished on: " + book.getDateCompleted());
-//        } else if (book.getDateCompleted() != null && book.getStatus() == 0){
-//            dateText.setText("Started on: " + book.getDateStarted());
-//        }
         titleText.setText(book.getTitle());
         authorsText.setText(book.getAuthors());
 

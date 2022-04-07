@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
                                             description = "";
                                         }
 //                                        add values to list
-                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail, description));
+                                        bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail, description, null));
                                     }
 //                                    Add results to ListView
                                     ArrayList<String> listContent = new ArrayList<String>();

@@ -29,8 +29,10 @@ import com.example.mob_dev_portfolio.data.BookDB;
 import com.example.mob_dev_portfolio.data.Quote;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -214,6 +216,8 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
             // If user reaches page from home page
         } else if (this.getArguments().containsKey("potential book")) {
             BookSearch currentBook = this.getArguments().getParcelable("potential book");
+            currentBook.setDateAdded(getTodaysDate());
+            System.out.println("date added: " + currentBook.getDateAdded());
             Picasso.get().load(currentBook.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
 
 //        Get book info from database
@@ -225,7 +229,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
 //                get book using id from bundle
-                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0, currentBook.getThumbnail(), currentBook.getDescription());
+                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0, currentBook.getThumbnail(), currentBook.getDescription(), currentBook.getDateAdded());
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -259,6 +263,12 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         }
 
 
+    }
+
+    public String getTodaysDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date today = new Date();
+        return formatter.format(today);
     }
 
     @Override
