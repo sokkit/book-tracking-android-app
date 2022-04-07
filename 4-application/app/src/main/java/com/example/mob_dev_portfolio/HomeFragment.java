@@ -93,13 +93,13 @@ public class HomeFragment extends Fragment {
                                             sb.insert(4,'s');
                                             thumbnail = sb.toString();
                                         } catch (JSONException err) {
-                                            thumbnail = "";
+                                            thumbnail = null;
                                         }
                                         try {
                                             description = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("description");
                                         } catch (JSONException err) {
                                             err.printStackTrace();
-                                            description = "";
+                                            description = "No description listed for this book";
                                         }
 //                                        add values to list
                                         bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail, description, null));
