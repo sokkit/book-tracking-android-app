@@ -12,8 +12,10 @@ import android.view.MenuItem;
 
 import com.example.mob_dev_portfolio.data.Book;
 import com.example.mob_dev_portfolio.data.BookDB;
+import com.example.mob_dev_portfolio.data.Quote;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -78,6 +80,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         new Book("Richard Gott", "Cuba: A New History", 2,
                                 null, null, "", 0.0F, "https://books.google.com/books/content?id=aVq0qOnLFusC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
                                 "A thorough examination of the history of the controversial island country looks at little-known aspects of its past, from its pre-Columbian origins to the fate of its native peoples, complete with up-to-date information on Cuba's place in a post-Soviet world."));
+                ArrayList<Integer> bookIds = new ArrayList<>();
+                for (Book b:
+                     db.bookDao().getAllBooks()) {
+                    bookIds.add(b.getBookId());
+                }
+                db.bookDao().insertAll(new Quote(bookIds.get(0), "The general public has long been divided into two parts; those who think that science can do anything and those who are afraid it will"),
+                        new Quote(bookIds.get(0), "and men of science,' cries dixon, 'may be but the simple tools of others, with no more idea of what they are about, than a hammer knows of a house."),
+                        new Quote(bookIds.get(0), "Mason glowers, shaking his head. \"I've ascended, descended, even condescended, and the List's not ended,— but haven't yet trans-cended a blessed thing, thankee" ));
+                db.bookDao().insertAll(new Quote(bookIds.get(1), "In a closed society where everybody's guilty, the only crime is getting caught. In a world of thieves, the only final sin is stupidity."),
+                        new Quote(bookIds.get(1), "Take it from me, there's nothing like a job well done. Except the quiet enveloping darkness at the bottom of a bottle of Jim Beam after a job done any way at all."));
+                db.bookDao().insertAll(new Quote(bookIds.get(2), "As Gregor Samsa awoke one morning from uneasy dreams he found himself transformed in his bed into a gigantic insect."),
+                        new Quote(bookIds.get(2), "He was a tool of the boss, without brains or backbone."), new Quote(bookIds.get(2), "A picture of my existence... would show a useless wooden stake covered in snow... stuck loosely at a slant in the ground in a ploughed field on the edge of a vast open plain on a dark winter night."));
             }
         });
 

@@ -201,6 +201,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     System.out.println("submitted quote for: " + currentBook);
                                     Quote dbQuote = new Quote(currentBook, quoteToAdd);
                                     db.bookDao().insertAll(dbQuote);
+                                    listContent.add(dbQuote.getQuote());
                                     la.notifyDataSetChanged();
                                 }
                             });
