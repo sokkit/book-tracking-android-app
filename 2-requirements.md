@@ -30,3 +30,17 @@ Non-Functional
 - Books should not have more than 10 tags
 - Users should not be able to rate books that have not been marked as read
 - Users should be able to access book search from the home page
+
+
+<!-- 
+Comments from Sandy
+
+This is a neat, concise set of requirements. I do have a couple of small suggestions for how you might want to improve it, though:
+
+- I am just curious about persistence in the application, because currently I think that an app that loses its contents when it is closed would still meet these requirements. It's implicit that the data entered being saved, but I wonder if it might be worth slightly modifying these so that it's explicit. Think of these reqs as a contract for delivery – and only what is specified gets built.
+
+- Is there any kind of login functionality for the app? Do you think there's any need to secure the data held in this app? It's fine if you don't, I am just curious.
+
+- Are there any non-functional requirements you are thinking of going with in terms of appearance (e.g., are you going to ascribe to a particular visual design pattern)? This isn't a requirement either, but it might be helpful to have some kind of guidelines to work toward in the app.
+
+-->
