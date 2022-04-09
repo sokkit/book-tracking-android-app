@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.mob_dev_portfolio">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,6 +14,7 @@
         android:theme="@style/Theme.Mobdevportfolio">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"
             android:exported="true">
             <intent-filter>
@@ -19,6 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Capture"
+            android:screenOrientation="portrait"
+            tools:replace="screenOrientation"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
 </manifest>
