@@ -1,6 +1,7 @@
 package com.example.mob_dev_portfolio;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -11,11 +12,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.mob_dev_portfolio.data.Book;
 import com.example.mob_dev_portfolio.data.BookDB;
+import com.squareup.picasso.Picasso;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -51,17 +58,12 @@ public class TbrFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ArrayList<String> readingBooksString = new ArrayList<>();
                         if (tbrBooks.size() > 0) {
-                            for (Book b:
-                                    tbrBooks) {
-//                                add string version of book to list
-                                readingBooksString.add(b.parseBook());
-                            }
 
                             ListAdapter adapter=new ListAdapter(getContext(), tbrBooks);
                             ListView lv = (ListView) getView().findViewById(R.id.custom_list_reading);
                             lv.setAdapter(adapter);
+
                             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

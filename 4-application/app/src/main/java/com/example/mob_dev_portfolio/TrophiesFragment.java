@@ -1,6 +1,7 @@
 package com.example.mob_dev_portfolio;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -55,7 +56,7 @@ public class TrophiesFragment extends Fragment {
         titles.add("Read 100 books");
         titles.add("Read a book in a week");
         titles.add("Read a book in a day");
-        titles.add("Add 10 books to your TBR");
+        titles.add("Add 10 books to TBR");
 
 
 
@@ -115,6 +116,14 @@ public class TrophiesFragment extends Fragment {
                         if (completedInDay) {
                             images.set(6, R.drawable.ic_baseline_access_time_24_gold);
                         }
+                        // Check SharedPreferences for TBR trophy
+                        SharedPreferences prefs = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+                        boolean tenTBR = prefs.getBoolean("tenTbr", false);
+                        System.out.println(tenTBR);
+                        if (tenTBR) {
+                            images.set(7, R.drawable.ic_baseline_playlist_add_check_24_gold);
+                        }
+
                         adapter = new Adapter(getContext(), titles, images);
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
                         dataList.setLayoutManager(gridLayoutManager);

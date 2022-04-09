@@ -79,6 +79,9 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         Button quoteButton = (Button) getView().findViewById(R.id.book_info_add_quote_button);
         ListView quoteListView = (ListView) getView().findViewById(R.id.book_info_quote_list);
 
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE).edit();
+
+
         // Hide quote section if book isn't in collection
         if (this.getArguments().containsKey("potential book")) {
             quoteHeading.setVisibility(View.GONE);
@@ -136,6 +139,13 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
             Context context = getContext();
             BookDB db = BookDB.getInstance(context);
             this.executor = Executors.newFixedThreadPool(4);
+
+            // Check TBR list size for trophy
+            List<Book> tbrList = db.bookDao().getBooksByStatus(2);
+            if (tbrList.size() > 9) {
+                editor.putBoolean("tenTbr", true);
+                editor.apply();
+            }
 
             executor.execute(new Runnable() {
                 @Override
@@ -229,7 +239,16 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
 //                get book using id from bundle
-                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null, "", 0, currentBook.getThumbnail(), currentBook.getDescription(), currentBook.getDateAdded());
+                    Book bookToView = new Book(currentBook.parseAuthor(), currentBook.getTitle(), 3, null, null,
+                            "", 0, currentBook.getThumbnail(), currentBook.getDescription(), currentBook.getDateAdded());
+
+                    // Check TBR list size for trophy
+                    List<Book> tbrList = db.bookDao().getBooksByStatus(2);
+                    if (tbrList.size() > 9) {
+                        editor.putBoolean("tenTbr", true);
+                        editor.apply();
+                    }
+
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
