@@ -109,14 +109,17 @@ public class HomeFragment extends Fragment {
                                     for (BookSearch b: bookSearches) {
                                         listContent.add(b.parseBook());
                                     }
-                                    ArrayAdapter<String> la = new ArrayAdapter<String>(
-                                            getContext(),
-                                            android.R.layout.simple_list_item_1,
-                                            listContent
-                                    );
-
+//                                    ArrayAdapter<String> la = new ArrayAdapter<String>(
+//                                            getContext(),
+//                                            android.R.layout.simple_list_item_1,
+//                                            listContent
+//                                    );
+//
+//                                    ListView lv = (ListView) getView().findViewById(R.id.searchResults);
+//                                    lv.setAdapter(la);
+                                    HomeListAdapter adapter=new HomeListAdapter(getContext(), bookSearches);
                                     ListView lv = (ListView) getView().findViewById(R.id.searchResults);
-                                    lv.setAdapter(la);
+                                    lv.setAdapter(adapter);
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

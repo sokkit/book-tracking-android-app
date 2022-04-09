@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
 public class ListAdapter extends ArrayAdapter<Book> {
 
     private final Context context;
-    ExecutorService executor;
 
     public ListAdapter(Context context, List<Book> bookArrayList) {
 
