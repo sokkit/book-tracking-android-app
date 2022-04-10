@@ -17,6 +17,8 @@
                 android:layout_width="76dp"
                 android:layout_height="120dp"
                 android:layout_marginEnd="190dp"
+                android:background="@color/nav_color"
+                android:padding="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -28,23 +30,22 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:text="title here"
-                app:layout_constraintBottom_toTopOf="@+id/reading_date"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/custom_list_cover"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
             <TextView
                 android:id="@+id/reading_authors"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:text="author here"
-                app:layout_constraintBottom_toTopOf="@+id/reading_title"
+                app:layout_constraintBottom_toTopOf="@+id/reading_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/custom_list_cover"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                app:layout_constraintTop_toBottomOf="@+id/reading_title" />
 
             <TextView
                 android:id="@+id/reading_date"
@@ -53,7 +54,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="85dp"
-                android:text="date here"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/custom_list_cover"
