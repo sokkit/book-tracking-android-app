@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -44,6 +45,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
@@ -240,16 +242,30 @@ public class HomeFragment extends Fragment {
 //                                        add values to list
                                 bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail, description, null));
                             }
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("potential book", bookSearches.get(0));
-                                // ref switch fragment from within fragment. Adapted to add bundle
-                                // https://stackoverflow.com/a/13217087/14457259
-                                Fragment newFragment = new BookInfoFragment();
-                                newFragment.setArguments(bundle);
-                                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                transaction.replace(R.id.container, newFragment);
-                                transaction.addToBackStack(null);
-                                transaction.commit();
+                            //                                    Add results to ListView
+                            ArrayList<String> listContent = new ArrayList<String>();
+                            for (BookSearch b: bookSearches) {
+                                listContent.add(b.parseBook());
+                            }
+                            HomeListAdapter adapter=new HomeListAdapter(getContext(), bookSearches);
+                            ListView lv = (ListView) getView().findViewById(R.id.searchResults);
+                            lv.setAdapter(adapter);
+                            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("potential book", bookSearches.get(i));
+                                    // ref switch fragment from within fragment. Adapted to add bundle
+                                    // https://stackoverflow.com/a/13217087/14457259
+                                    Fragment newFragment = new BookInfoFragment();
+                                    newFragment.setArguments(bundle);
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.container, newFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                    // end of reference
+                                }
+                            });
                         } catch (JSONException err) {
                             err.printStackTrace();
                         }
