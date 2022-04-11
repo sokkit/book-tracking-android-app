@@ -66,8 +66,8 @@ public class HomeFragment extends Fragment {
                 IntentIntegrator intentIntegrator = new IntentIntegrator(
                         getActivity());
                 intentIntegrator.setPrompt("For flash use volume up key");
-                intentIntegrator.setBeepEnabled(true);
-                intentIntegrator.setOrientationLocked(false);
+                intentIntegrator.setBeepEnabled(false);
+                intentIntegrator.setOrientationLocked(true);
                 intentIntegrator.setCaptureActivity(Capture.class);
                 IntentIntegrator.forSupportFragment(HomeFragment.this).initiateScan();
             }
