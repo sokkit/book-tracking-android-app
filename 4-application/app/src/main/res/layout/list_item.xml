@@ -32,6 +32,7 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:textStyle="bold"
+                android:textSize="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/custom_list_cover"
                 app:layout_constraintTop_toTopOf="parent" />

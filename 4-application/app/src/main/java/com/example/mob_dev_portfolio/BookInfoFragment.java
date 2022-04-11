@@ -82,11 +82,15 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE).edit();
 
 
-        // Hide quote section if book isn't in collection
+        // if book isn't in collection
         if (this.getArguments().containsKey("potential book")) {
+            //hide quote selection
             quoteHeading.setVisibility(View.GONE);
             quoteEditText.setVisibility(View.GONE);
             quoteButton.setVisibility(View.GONE);
+            quoteListView.setVisibility(View.GONE);
+            // update submit button
+            submitButton.setText("Add book");
         }
 
         // Reference - Expandable calendar combined with EditText
@@ -171,6 +175,10 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            // Hide quote list of no quotes
+                            if (quoteList.size()==0) {
+                                quoteListView.setVisibility(View.GONE);
+                            }
                             Picasso.get().load(bookToView.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
                             review.setText(bookToView.getReview());
                             titleText.setText(bookToView.getTitle());
@@ -208,6 +216,8 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             quoteButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+                                    quoteListView.setVisibility(View.VISIBLE);
+//                                    quoteListView.requestLayout();
                                     String quoteToAdd = quoteEditText.getText().toString();
                                     System.out.println("quote: " + quoteToAdd);
                                     System.out.println("submitted quote for: " + currentBook);

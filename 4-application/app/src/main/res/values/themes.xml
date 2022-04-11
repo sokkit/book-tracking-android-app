@@ -6,7 +6,7 @@
 <!--        buttons and nav bar selected color-->
         <item name="colorPrimary">@color/nav_color</item>
 <!--        top toolbar colour-->
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimaryVariant">@color/nav_color</item>
 <!--        button text colour-->
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
