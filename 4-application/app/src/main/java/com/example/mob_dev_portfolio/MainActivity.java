@@ -67,9 +67,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                System.out.println("All books: ");
                 List<Book> allBooks = db.bookDao().getAllBooks();
-                System.out.println(allBooks);
 //                db.clearAllTables();
 //                db.bookDao().insertAll(
 //                        new Book("Thomas Pynchon", "Mason & Dixon",

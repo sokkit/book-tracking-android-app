@@ -19,15 +19,12 @@ public abstract class BookDB extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (BookDB.class) {
                 if (INSTANCE == null) {
-                    System.out.println("instance is null");
                     INSTANCE = Room.databaseBuilder(context,
                             BookDB.class, "book-db")
                             .allowMainThreadQueries().createFromAsset("database/mob2.db")
                             .build();
                 }
             }
-        } else {
-            System.out.println("instance isn't null");
         }
         return INSTANCE;
     }

@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mob_dev_portfolio.data.Book;
 import com.example.mob_dev_portfolio.data.BookDB;
@@ -30,6 +31,8 @@ import com.example.mob_dev_portfolio.data.Quote;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -237,7 +240,6 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         } else if (this.getArguments().containsKey("potential book")) {
             BookSearch currentBook = this.getArguments().getParcelable("potential book");
             currentBook.setDateAdded(getTodaysDate());
-            System.out.println("date added: " + currentBook.getDateAdded());
             Picasso.get().load(currentBook.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
 
 //        Get book info from database
@@ -277,12 +279,38 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
-                                    bookToView.setReview(review.getText().toString());
-                                    bookToView.setStatus(newStatus);
-                                    bookToView.setDateStarted(dateStarted.getText().toString());
-                                    bookToView.setDateCompleted(dateCompleted.getText().toString());
-                                    bookToView.setRating(rating.getRating());
-                                    db.bookDao().insertAll(bookToView);
+                                    // validation
+                                    if (choice.equals("Read")) {
+                                        if (dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "Must fill in dates for read book", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                        } else if (dateBefore(dateCompleted.getText().toString(), dateStarted.getText().toString())) {
+                                            Toast.makeText(getContext(), "Date completed can't be before date started", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                        }
+                                    }   else if (choice.equals("Reading") && !dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
+                                        Toast.makeText(getContext(), "Invalid dates for reading book", Toast.LENGTH_SHORT).show();
+                                        clearDates(dateCompleted, dateStarted);
+                                    } else if (choice.equals("TBR")) {
+                                        if (!dateCompleted.getText().toString().equals("") || !dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "No dates needed for To Be Read books", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                        }
+                                    }
+                                        else {
+                                        bookToView.setReview(review.getText().toString());
+                                        bookToView.setStatus(newStatus);
+                                        bookToView.setDateStarted(dateStarted.getText().toString());
+                                        bookToView.setDateCompleted(dateCompleted.getText().toString());
+                                        bookToView.setRating(rating.getRating());
+                                        db.bookDao().insertAll(bookToView);
+                                    }
+
+                                }
+
+                                private void clearDates(EditText dateCompleted, EditText dateStarted) {
+                                    dateCompleted.setText("");
+                                    dateStarted.setText("");
                                 }
                             });
                         }
@@ -298,6 +326,13 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date today = new Date();
         return formatter.format(today);
+    }
+
+    public boolean dateBefore(String date1, String date2) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+        LocalDate formattedDate1 = LocalDate.parse(date1, formatter);
+        LocalDate formattedDate2 = LocalDate.parse(date2, formatter);
+        return formattedDate1.isBefore(formattedDate2);
     }
 
     @Override
