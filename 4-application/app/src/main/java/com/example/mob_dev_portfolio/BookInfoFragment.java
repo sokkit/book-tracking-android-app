@@ -1,7 +1,9 @@
 package com.example.mob_dev_portfolio;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -208,6 +210,49 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
+
+                                    // validation
+                                    boolean validValues = true;
+                                    if (choice.equals("Read")) {
+                                        if (dateCompleted.getText().toString().equals("") || choice.equals("Read") && dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "Must fill in dates for read book", Toast.LENGTH_SHORT).show();
+                                            dateCompleted.setText(bookToView.getDateCompleted());
+                                            dateStarted.setText(bookToView.getDateStarted());
+                                            validValues = false;
+                                        } else if (dateBefore(dateCompleted.getText().toString(), dateStarted.getText().toString())) {
+                                            Toast.makeText(getContext(), "Date completed can't be before date started", Toast.LENGTH_SHORT).show();
+                                            dateCompleted.setText(bookToView.getDateCompleted());
+                                            dateStarted.setText(bookToView.getDateStarted());
+                                            validValues = false;
+                                        }
+                                    }
+                                    if (choice.equals("Reading")) {
+                                        if (!dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "Invalid dates for reading book", Toast.LENGTH_SHORT).show();
+                                            dateCompleted.setText("");
+                                            dateStarted.setText(bookToView.getDateStarted());
+                                            validValues = false;
+                                        }
+                                    }
+                                    if (choice.equals("TBR")) {
+                                        if (!dateCompleted.getText().toString().equals("") || !dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "No dates needed for To Be Read books", Toast.LENGTH_SHORT).show();
+                                            dateCompleted.setText("");
+                                            dateStarted.setText("");
+                                            validValues = false;
+                                        }
+                                    }
+
+                                    if (validValues) {
+                                        bookToView.setReview(review.getText().toString());
+                                        bookToView.setStatus(newStatus);
+                                        bookToView.setDateStarted(dateStarted.getText().toString());
+                                        bookToView.setDateCompleted(dateCompleted.getText().toString());
+                                        bookToView.setRating(rating.getRating());
+                                        db.bookDao().insertAll(bookToView);
+                                    }
+                                    // end of validation
+
                                     Float ratingValue = (Float) rating.getRating();
                                     db.bookDao().updateReview(review.getText().toString(), currentBook);
                                     db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
@@ -279,32 +324,68 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
+
                                     // validation
+                                    boolean validValues = true;
                                     if (choice.equals("Read")) {
-                                        if (dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
+                                        if (dateCompleted.getText().toString().equals("") || choice.equals("Read") && dateStarted.getText().toString().equals("")) {
                                             Toast.makeText(getContext(), "Must fill in dates for read book", Toast.LENGTH_SHORT).show();
                                             clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
                                         } else if (dateBefore(dateCompleted.getText().toString(), dateStarted.getText().toString())) {
                                             Toast.makeText(getContext(), "Date completed can't be before date started", Toast.LENGTH_SHORT).show();
                                             clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
                                         }
-                                    }   else if (choice.equals("Reading") && !dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
-                                        Toast.makeText(getContext(), "Invalid dates for reading book", Toast.LENGTH_SHORT).show();
-                                        clearDates(dateCompleted, dateStarted);
-                                    } else if (choice.equals("TBR")) {
+                                    }
+                                    if (choice.equals("Reading")) {
+                                        if (!dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "Invalid dates for reading book", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
+                                        }
+                                    }
+                                    if (choice.equals("TBR")) {
                                         if (!dateCompleted.getText().toString().equals("") || !dateStarted.getText().toString().equals("")) {
                                             Toast.makeText(getContext(), "No dates needed for To Be Read books", Toast.LENGTH_SHORT).show();
                                             clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
                                         }
                                     }
-                                        else {
-                                        bookToView.setReview(review.getText().toString());
-                                        bookToView.setStatus(newStatus);
-                                        bookToView.setDateStarted(dateStarted.getText().toString());
-                                        bookToView.setDateCompleted(dateCompleted.getText().toString());
-                                        bookToView.setRating(rating.getRating());
-                                        db.bookDao().insertAll(bookToView);
+
+                                    if (validValues) {
+                                        int finalNewStatus = newStatus;
+                                        List<Book> dupeCheck = db.bookDao().getBooksByTitle(bookToView.getTitle());
+                                        if (dupeCheck.size() != 0) {
+                                            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    switch (which){
+                                                        case DialogInterface.BUTTON_POSITIVE:
+                                                            //Yes button clicked
+                                                            bookToView.setReview(review.getText().toString());
+                                                            bookToView.setStatus(finalNewStatus);
+                                                            bookToView.setDateStarted(dateStarted.getText().toString());
+                                                            bookToView.setDateCompleted(dateCompleted.getText().toString());
+                                                            bookToView.setRating(rating.getRating());
+                                                            db.bookDao().insertAll(bookToView);
+                                                            Toast.makeText(getContext(), "Book added!", Toast.LENGTH_SHORT).show();
+                                                            break;
+
+                                                        case DialogInterface.BUTTON_NEGATIVE:
+                                                            //No button clicked
+                                                            break;
+                                                    }
+                                                }
+                                            };
+
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                            builder.setMessage("Book already add. Are you sure you want to add this book?").setPositiveButton("Yes", dialogClickListener)
+                                                    .setNegativeButton("No", dialogClickListener).show();
+                                        }
+
                                     }
+                                    // end of validation
 
                                 }
 
