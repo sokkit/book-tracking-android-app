@@ -244,34 +244,29 @@ public class HomeFragment extends Fragment {
                                 bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail, description, null));
                             }
                             //                                    Add results to ListView
-                            if (bookSearches.size() > 0) {
-                                System.out.println(bookSearches.get(0));
-                                ArrayList<String> listContent = new ArrayList<String>();
-                                for (BookSearch b: bookSearches) {
-                                    listContent.add(b.parseBook());
-                                }
-                                Context context = getContext();
-                                HomeListAdapter adapter=new HomeListAdapter(context, bookSearches);
-                                ListView lv = (ListView) getView().findViewById(R.id.searchResults);
-                                lv.setAdapter(adapter);
-                                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                        Bundle bundle = new Bundle();
-                                        bundle.putParcelable("potential book", bookSearches.get(i));
-                                        // ref switch fragment from within fragment. Adapted to add bundle
-                                        // https://stackoverflow.com/a/13217087/14457259
-                                        Fragment newFragment = new BookInfoFragment();
-                                        newFragment.setArguments(bundle);
-                                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                        transaction.replace(R.id.container, newFragment);
-                                        transaction.addToBackStack(null);
-                                        transaction.commit();
-                                        // end of reference
-                                    }
-                                });
+                            ArrayList<String> listContent = new ArrayList<String>();
+                            for (BookSearch b: bookSearches) {
+                                listContent.add(b.parseBook());
                             }
-
+                            HomeListAdapter adapter=new HomeListAdapter(getContext(), bookSearches);
+                            ListView lv = (ListView) getView().findViewById(R.id.searchResults);
+                            lv.setAdapter(adapter);
+                            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("potential book", bookSearches.get(i));
+                                    // ref switch fragment from within fragment. Adapted to add bundle
+                                    // https://stackoverflow.com/a/13217087/14457259
+                                    Fragment newFragment = new BookInfoFragment();
+                                    newFragment.setArguments(bundle);
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.container, newFragment);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                    // end of reference
+                                }
+                            });
                         } catch (JSONException err) {
                             err.printStackTrace();
                         }
