@@ -244,21 +244,17 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     }
 
                                     if (validValues) {
-                                        bookToView.setReview(review.getText().toString());
-                                        bookToView.setStatus(newStatus);
-                                        bookToView.setDateStarted(dateStarted.getText().toString());
-                                        bookToView.setDateCompleted(dateCompleted.getText().toString());
-                                        bookToView.setRating(rating.getRating());
-                                        db.bookDao().insertAll(bookToView);
+                                        Float ratingValue = (Float) rating.getRating();
+                                        db.bookDao().updateReview(review.getText().toString(), currentBook);
+                                        db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
+                                        db.bookDao().updateDateCompleted(dateCompleted.getText().toString(), currentBook);
+                                        db.bookDao().updateReadingStatus(newStatus, currentBook);
+                                        db.bookDao().updateRating(ratingValue, currentBook);
+                                        Toast.makeText(getContext(), "Book updated!", Toast.LENGTH_SHORT).show();
                                     }
                                     // end of validation
 
-                                    Float ratingValue = (Float) rating.getRating();
-                                    db.bookDao().updateReview(review.getText().toString(), currentBook);
-                                    db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
-                                    db.bookDao().updateDateCompleted(dateCompleted.getText().toString(), currentBook);
-                                    db.bookDao().updateReadingStatus(newStatus, currentBook);
-                                    db.bookDao().updateRating(ratingValue, currentBook);
+
                                 }
                             });
                             quoteButton.setOnClickListener(new View.OnClickListener() {
@@ -316,6 +312,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             submitButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+                                    System.out.println("validating");
                                     String choice = readingStatus.getSelectedItem().toString();
                                     // update reading status from spinner
                                     int newStatus = 0;
@@ -346,6 +343,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                         }
                                     }
                                     if (choice.equals("TBR")) {
+                                        System.out.println("CHoice is TBR");
                                         if (!dateCompleted.getText().toString().equals("") || !dateStarted.getText().toString().equals("")) {
                                             Toast.makeText(getContext(), "No dates needed for To Be Read books", Toast.LENGTH_SHORT).show();
                                             clearDates(dateCompleted, dateStarted);
@@ -355,6 +353,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
 
                                     if (validValues) {
                                         int finalNewStatus = newStatus;
+                                        System.out.println("new status: " + finalNewStatus);
                                         List<Book> dupeCheck = db.bookDao().getBooksByTitle(bookToView.getTitle());
                                         if (dupeCheck.size() != 0) {
                                             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -380,8 +379,17 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                             };
 
                                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                            builder.setMessage("Book already add. Are you sure you want to add this book?").setPositiveButton("Yes", dialogClickListener)
+                                            builder.setMessage("This book is already in your library. Are you sure you want to add this book?").setPositiveButton("Yes", dialogClickListener)
                                                     .setNegativeButton("No", dialogClickListener).show();
+                                        } else {
+                                            bookToView.setReview(review.getText().toString());
+                                            bookToView.setStatus(finalNewStatus);
+                                            bookToView.setDateStarted(dateStarted.getText().toString());
+                                            bookToView.setDateCompleted(dateCompleted.getText().toString());
+                                            bookToView.setRating(rating.getRating());
+                                            db.bookDao().insertAll(bookToView);
+                                            Toast.makeText(getContext(), "Book added!", Toast.LENGTH_SHORT).show();
+
                                         }
 
                                     }
