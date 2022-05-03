@@ -5,7 +5,7 @@ Your username: `c2061455`
 
 Student ID: `2061455`
 
-To navigate the application, I will be utilising the bottom navigation bar combined with fragments. The bottom navigation bar will comprise of the main features of the application: home page, reading list, read list, to be read list, and trophies. I chose the bottom navigation bar as opposed to something like tabs because of usability. The user’s thumb is going to naturally be at the bottom of the screen, so it makes sense to put the main features there.
+To navigate the application, I will be utilising the bottom navigation bar combined with `fragments`. The bottom navigation bar will comprise of the main features of the application: home page, reading list, read list, to be read list, and trophies. I chose the bottom navigation bar as opposed to something like tabs because of usability. The user’s thumb is going to naturally be at the bottom of the screen, so it makes sense to put the main features there.
 
 Many of the main features of the application (the read, reading, and to be read lists) will be quite similar, so I will be using fragments. The application should also be easier to manage by keeping activities to a small level as fragments are more lightweight and easier to manage. Fragments do not need to be added to the manifest.
 
