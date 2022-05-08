@@ -1,6 +1,7 @@
 package com.example.mob_dev_portfolio;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -62,13 +63,12 @@ public class HomeFragment extends Fragment {
         btScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IntentIntegrator intentIntegrator = new IntentIntegrator(
-                        getActivity());
-                intentIntegrator.setPrompt("For flash use volume up key");
-                intentIntegrator.setBeepEnabled(false);
-                intentIntegrator.setOrientationLocked(false);
-                intentIntegrator.setCaptureActivity(Capture.class);
-                IntentIntegrator.forSupportFragment(HomeFragment.this).initiateScan();
+                IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
+                intentIntegrator.forSupportFragment(HomeFragment.this).setPrompt("For flash use volume up key");
+                intentIntegrator.forSupportFragment(HomeFragment.this).setBeepEnabled(false);
+                intentIntegrator.forSupportFragment(HomeFragment.this).setOrientationLocked(false);
+                intentIntegrator.forSupportFragment(HomeFragment.this).setCaptureActivity(Capture.class);
+                intentIntegrator.forSupportFragment(HomeFragment.this).initiateScan();
             }
         });
         // end of reference
@@ -92,7 +92,6 @@ public class HomeFragment extends Fragment {
                                     bookSearches.clear();
 //                                    Add results to ListView items
                                     for (int i = 0; i < response.getJSONArray("items").length(); i++) {
-                                        System.out.println(response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title"));
 //                                        if title and author exist, assign them
                                         try {
                                             bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
@@ -198,77 +197,72 @@ public class HomeFragment extends Fragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            String bookTitle;
-                            String bookAuthor;
-                            String isbn;
-                            String thumbnail;
-                            String description;
-                            bookSearches.clear();
+                        String bookTitle;
+                        String bookAuthor;
+                        String isbn;
+                        String thumbnail;
+                        String description;
+                        bookSearches.clear();
 //                                    Add results to ListView items
-                            for (int i = 0; i < 1; i++) {
-                                System.out.println(response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title"));
+                        for (int i = 0; i < 1; i++) {
 //                                        if title and author exist, assign them
-                                try {
-                                    bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
-                                } catch (JSONException err) {
-                                    bookTitle = "Not title found";
-                                }
-                                try {
-                                    bookAuthor = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("authors");
-                                } catch (JSONException err) {
-                                    bookAuthor = "No author found";
-                                }
-                                try {
-                                    isbn = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("industryIdentifiers").getJSONObject(0).getString("identifier");
-                                } catch (JSONException err) {
-                                    isbn = "";
-                                }
-                                try {
-                                    thumbnail = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail");
-                                    // turn url into https
-                                    StringBuilder sb = new StringBuilder(thumbnail);
-                                    sb.insert(4,'s');
-                                    thumbnail = sb.toString();
-                                } catch (JSONException err) {
-                                    thumbnail = null;
-                                }
-                                try {
-                                    description = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("description");
-                                } catch (JSONException err) {
-                                    err.printStackTrace();
-                                    description = "No description listed for this book";
-                                }
+                            try {
+                                bookTitle = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title");
+                            } catch (JSONException err) {
+                                bookTitle = "Not title found";
+                            }
+                            try {
+                                bookAuthor = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("authors");
+                            } catch (JSONException err) {
+                                bookAuthor = "No author found";
+                            }
+                            try {
+                                isbn = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("industryIdentifiers").getJSONObject(0).getString("identifier");
+                            } catch (JSONException err) {
+                                isbn = "";
+                            }
+                            try {
+                                thumbnail = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail");
+                                // turn url into https
+                                StringBuilder sb = new StringBuilder(thumbnail);
+                                sb.insert(4,'s');
+                                thumbnail = sb.toString();
+                            } catch (JSONException err) {
+                                thumbnail = null;
+                            }
+                            try {
+                                description = response.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("description");
+                            } catch (JSONException err) {
+                                err.printStackTrace();
+                                description = "No description listed for this book";
+                            }
 //                                        add values to list
-                                bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail, description, null));
-                            }
-                            //                                    Add results to ListView
-                            ArrayList<String> listContent = new ArrayList<String>();
-                            for (BookSearch b: bookSearches) {
-                                listContent.add(b.parseBook());
-                            }
-                            HomeListAdapter adapter=new HomeListAdapter(getContext(), bookSearches);
-                            ListView lv = (ListView) getView().findViewById(R.id.searchResults);
-                            lv.setAdapter(adapter);
-                            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putParcelable("potential book", bookSearches.get(i));
-                                    // ref switch fragment from within fragment. Adapted to add bundle
-                                    // https://stackoverflow.com/a/13217087/14457259
-                                    Fragment newFragment = new BookInfoFragment();
-                                    newFragment.setArguments(bundle);
-                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                    transaction.replace(R.id.container, newFragment);
-                                    transaction.addToBackStack(null);
-                                    transaction.commit();
-                                    // end of reference
-                                }
-                            });
-                        } catch (JSONException err) {
-                            err.printStackTrace();
+                            bookSearches.add(new BookSearch(bookTitle, bookAuthor, isbn, thumbnail, description, null));
                         }
+                        //                                    Add results to ListView
+                        ArrayList<String> listContent = new ArrayList<String>();
+                        for (BookSearch b: bookSearches) {
+                            listContent.add(b.parseBook());
+                        }
+                        HomeListAdapter adapter=new HomeListAdapter(getContext(), bookSearches);
+                        ListView lv = (ListView) getView().findViewById(R.id.searchResults);
+                        lv.setAdapter(adapter);
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("potential book", bookSearches.get(i));
+                                // ref switch fragment from within fragment. Adapted to add bundle
+                                // https://stackoverflow.com/a/13217087/14457259
+                                Fragment newFragment = new BookInfoFragment();
+                                newFragment.setArguments(bundle);
+                                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                transaction.replace(R.id.container, newFragment);
+                                transaction.addToBackStack(null);
+                                transaction.commit();
+                                // end of reference
+                            }
+                        });
                     }
                 },
                 new Response.ErrorListener() {

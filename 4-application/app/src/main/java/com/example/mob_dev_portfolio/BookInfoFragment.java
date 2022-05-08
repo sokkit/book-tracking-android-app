@@ -1,7 +1,9 @@
 package com.example.mob_dev_portfolio;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -23,6 +25,7 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mob_dev_portfolio.data.Book;
 import com.example.mob_dev_portfolio.data.BookDB;
@@ -30,6 +33,8 @@ import com.example.mob_dev_portfolio.data.Quote;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -82,11 +87,15 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE).edit();
 
 
-        // Hide quote section if book isn't in collection
+        // if book isn't in collection
         if (this.getArguments().containsKey("potential book")) {
+            //hide quote selection
             quoteHeading.setVisibility(View.GONE);
             quoteEditText.setVisibility(View.GONE);
             quoteButton.setVisibility(View.GONE);
+            quoteListView.setVisibility(View.GONE);
+            // update submit button
+            submitButton.setText("Add book");
         }
 
         // Reference - Expandable calendar combined with EditText
@@ -171,6 +180,10 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            // Hide quote list of no quotes
+                            if (quoteList.size()==0) {
+                                quoteListView.setVisibility(View.GONE);
+                            }
                             Picasso.get().load(bookToView.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
                             review.setText(bookToView.getReview());
                             titleText.setText(bookToView.getTitle());
@@ -197,17 +210,58 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
-                                    Float ratingValue = (Float) rating.getRating();
-                                    db.bookDao().updateReview(review.getText().toString(), currentBook);
-                                    db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
-                                    db.bookDao().updateDateCompleted(dateCompleted.getText().toString(), currentBook);
-                                    db.bookDao().updateReadingStatus(newStatus, currentBook);
-                                    db.bookDao().updateRating(ratingValue, currentBook);
+
+                                    // validation
+                                    boolean validValues = true;
+                                    if (choice.equals("Read")) {
+                                        if (dateCompleted.getText().toString().equals("") || choice.equals("Read") && dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "Must fill in dates for read book", Toast.LENGTH_SHORT).show();
+                                            dateCompleted.setText(bookToView.getDateCompleted());
+                                            dateStarted.setText(bookToView.getDateStarted());
+                                            validValues = false;
+                                        } else if (dateBefore(dateCompleted.getText().toString(), dateStarted.getText().toString())) {
+                                            Toast.makeText(getContext(), "Date completed can't be before date started", Toast.LENGTH_SHORT).show();
+                                            dateCompleted.setText(bookToView.getDateCompleted());
+                                            dateStarted.setText(bookToView.getDateStarted());
+                                            validValues = false;
+                                        }
+                                    }
+                                    if (choice.equals("Reading")) {
+                                        if (!dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "Invalid dates for reading book", Toast.LENGTH_SHORT).show();
+                                            dateCompleted.setText("");
+                                            dateStarted.setText(bookToView.getDateStarted());
+                                            validValues = false;
+                                        }
+                                    }
+                                    if (choice.equals("TBR")) {
+                                        if (!dateCompleted.getText().toString().equals("") || !dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "No dates needed for To Be Read books", Toast.LENGTH_SHORT).show();
+                                            dateCompleted.setText("");
+                                            dateStarted.setText("");
+                                            validValues = false;
+                                        }
+                                    }
+
+                                    if (validValues) {
+                                        Float ratingValue = (Float) rating.getRating();
+                                        db.bookDao().updateReview(review.getText().toString(), currentBook);
+                                        db.bookDao().updateDateStarted(dateStarted.getText().toString(), currentBook);
+                                        db.bookDao().updateDateCompleted(dateCompleted.getText().toString(), currentBook);
+                                        db.bookDao().updateReadingStatus(newStatus, currentBook);
+                                        db.bookDao().updateRating(ratingValue, currentBook);
+                                        Toast.makeText(getContext(), "Book updated!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    // end of validation
+
+
                                 }
                             });
                             quoteButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+                                    quoteListView.setVisibility(View.VISIBLE);
+//                                    quoteListView.requestLayout();
                                     String quoteToAdd = quoteEditText.getText().toString();
                                     System.out.println("quote: " + quoteToAdd);
                                     System.out.println("submitted quote for: " + currentBook);
@@ -227,7 +281,6 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         } else if (this.getArguments().containsKey("potential book")) {
             BookSearch currentBook = this.getArguments().getParcelable("potential book");
             currentBook.setDateAdded(getTodaysDate());
-            System.out.println("date added: " + currentBook.getDateAdded());
             Picasso.get().load(currentBook.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
 
 //        Get book info from database
@@ -259,6 +312,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             submitButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+                                    System.out.println("validating");
                                     String choice = readingStatus.getSelectedItem().toString();
                                     // update reading status from spinner
                                     int newStatus = 0;
@@ -267,12 +321,85 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     } else if (choice.equals("TBR")) {
                                         newStatus = 2;
                                     }
-                                    bookToView.setReview(review.getText().toString());
-                                    bookToView.setStatus(newStatus);
-                                    bookToView.setDateStarted(dateStarted.getText().toString());
-                                    bookToView.setDateCompleted(dateCompleted.getText().toString());
-                                    bookToView.setRating(rating.getRating());
-                                    db.bookDao().insertAll(bookToView);
+
+                                    // validation
+                                    boolean validValues = true;
+                                    if (choice.equals("Read")) {
+                                        if (dateCompleted.getText().toString().equals("") || choice.equals("Read") && dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "Must fill in dates for read book", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
+                                        } else if (dateBefore(dateCompleted.getText().toString(), dateStarted.getText().toString())) {
+                                            Toast.makeText(getContext(), "Date completed can't be before date started", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
+                                        }
+                                    }
+                                    if (choice.equals("Reading")) {
+                                        if (!dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "Invalid dates for reading book", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
+                                        }
+                                    }
+                                    if (choice.equals("TBR")) {
+                                        System.out.println("CHoice is TBR");
+                                        if (!dateCompleted.getText().toString().equals("") || !dateStarted.getText().toString().equals("")) {
+                                            Toast.makeText(getContext(), "No dates needed for To Be Read books", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
+                                        }
+                                    }
+
+                                    if (validValues) {
+                                        int finalNewStatus = newStatus;
+                                        System.out.println("new status: " + finalNewStatus);
+                                        List<Book> dupeCheck = db.bookDao().getBooksByTitle(bookToView.getTitle());
+                                        if (dupeCheck.size() != 0) {
+                                            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    switch (which){
+                                                        case DialogInterface.BUTTON_POSITIVE:
+                                                            //Yes button clicked
+                                                            bookToView.setReview(review.getText().toString());
+                                                            bookToView.setStatus(finalNewStatus);
+                                                            bookToView.setDateStarted(dateStarted.getText().toString());
+                                                            bookToView.setDateCompleted(dateCompleted.getText().toString());
+                                                            bookToView.setRating(rating.getRating());
+                                                            db.bookDao().insertAll(bookToView);
+                                                            Toast.makeText(getContext(), "Book added!", Toast.LENGTH_SHORT).show();
+                                                            break;
+
+                                                        case DialogInterface.BUTTON_NEGATIVE:
+                                                            //No button clicked
+                                                            break;
+                                                    }
+                                                }
+                                            };
+
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                            builder.setMessage("This book is already in your library. Are you sure you want to add this book?").setPositiveButton("Yes", dialogClickListener)
+                                                    .setNegativeButton("No", dialogClickListener).show();
+                                        } else {
+                                            bookToView.setReview(review.getText().toString());
+                                            bookToView.setStatus(finalNewStatus);
+                                            bookToView.setDateStarted(dateStarted.getText().toString());
+                                            bookToView.setDateCompleted(dateCompleted.getText().toString());
+                                            bookToView.setRating(rating.getRating());
+                                            db.bookDao().insertAll(bookToView);
+                                            Toast.makeText(getContext(), "Book added!", Toast.LENGTH_SHORT).show();
+
+                                        }
+
+                                    }
+                                    // end of validation
+
+                                }
+
+                                private void clearDates(EditText dateCompleted, EditText dateStarted) {
+                                    dateCompleted.setText("");
+                                    dateStarted.setText("");
                                 }
                             });
                         }
@@ -288,6 +415,13 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date today = new Date();
         return formatter.format(today);
+    }
+
+    public boolean dateBefore(String date1, String date2) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+        LocalDate formattedDate1 = LocalDate.parse(date1, formatter);
+        LocalDate formattedDate2 = LocalDate.parse(date2, formatter);
+        return formattedDate1.isBefore(formattedDate2);
     }
 
     @Override

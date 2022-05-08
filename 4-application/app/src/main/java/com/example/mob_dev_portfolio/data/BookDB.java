@@ -6,6 +6,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import java.util.ArrayList;
+
 @Database(entities = {Book.class, Quote.class}, version = 1)
 public abstract class BookDB extends RoomDatabase {
     private static BookDB INSTANCE;
@@ -19,7 +21,7 @@ public abstract class BookDB extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context,
                             BookDB.class, "book-db")
-                            .allowMainThreadQueries()
+                            .allowMainThreadQueries().createFromAsset("database/mob2.db")
                             .build();
                 }
             }
