@@ -21,6 +21,27 @@ public class BookSearch implements Parcelable {
         this.dateAdded = dateAdded;
     }
 
+    protected BookSearch(Parcel in) {
+        title = in.readString();
+        author = in.readString();
+        isbn = in.readString();
+        thumbnail = in.readString();
+        description = in.readString();
+        dateAdded = in.readString();
+    }
+
+    public static final Creator<BookSearch> CREATOR = new Creator<BookSearch>() {
+        @Override
+        public BookSearch createFromParcel(Parcel in) {
+            return new BookSearch(in);
+        }
+
+        @Override
+        public BookSearch[] newArray(int size) {
+            return new BookSearch[size];
+        }
+    };
+
     public String getTitle() {
         return title;
     }
@@ -100,6 +121,11 @@ public class BookSearch implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
+        parcel.writeString(title);
+        parcel.writeString(author);
+        parcel.writeString(isbn);
+        parcel.writeString(thumbnail);
+        parcel.writeString(description);
+        parcel.writeString(dateAdded);
     }
 }
