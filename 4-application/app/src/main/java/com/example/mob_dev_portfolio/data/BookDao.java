@@ -52,10 +52,13 @@ public interface BookDao {
     @Query("SELECT * FROM Quote")
     List<Quote> getAllQuotes();
 
+    @Query("DELETE FROM Quote WHERE quote = :quote")
+    void deleteQuote(String quote);
+
     @Insert
     void insertAll(Quote... quotes);
 
     @Query("SELECT * FROM Quote WHERE bookId = :id")
-    List<Quote>getQuotesByBookId(int id);
+    List<Quote> getQuotesByBookId(int id);
 
 }

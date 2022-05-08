@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/popup_reading"
-        android:title="Reading" />
+        android:id="@+id/popup_share"
+        android:title="Share" />
     <item
-        android:id="@+id/popup_read"
-        android:title="Read"/>
-    <item
-        android:id="@+id/popup_tbr"
-        android:title="TBR"/>
+        android:id="@+id/popup_delete"
+        android:title="Delete"/>
 </menu>

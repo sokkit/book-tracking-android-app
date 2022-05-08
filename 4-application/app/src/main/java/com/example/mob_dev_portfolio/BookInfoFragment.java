@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -22,6 +23,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,8 +51,6 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
     public BookInfoFragment() {
         // Required empty public constructor
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -159,6 +159,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
+                    // create quote list
                     List<Quote> quoteList;
                     // get book using id from bundle
                     Book bookToView = db.bookDao().getByBookId(currentBook);
@@ -175,12 +176,43 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             android.R.layout.simple_list_item_1,
                             listContent
                     );
+
                     quoteListView.setAdapter(la);
+
+                    quoteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            System.out.println("clicked");
+                            PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+                            popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+                            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem menuItem) {
+
+                                    switch (menuItem.getItemId()) {
+
+                                        case R.id.popup_share:
+                                            System.out.println("share");
+                                            break;
+
+                                        case R.id.popup_delete:
+                                            System.out.println("delete");
+                                            db.bookDao().deleteQuote(listContent.get(i));
+                                            listContent.remove(i);
+                                            la.notifyDataSetChanged();
+                                            break;
+                                    }
+                                    return true;
+                                }
+                            });
+                            popupMenu.show();
+                        }
+                    });
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // Hide quote list of no quotes
+                            // Hide quote list if no quotes exist
                             if (quoteList.size()==0) {
                                 quoteListView.setVisibility(View.GONE);
                             }
@@ -257,6 +289,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
 
                                 }
                             });
+                            // Add quote
                             quoteButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -271,6 +304,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     la.notifyDataSetChanged();
                                 }
                             });
+
                         }
                     });
                 }
