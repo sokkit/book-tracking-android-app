@@ -200,6 +200,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/book_info_quote_edit_text" />
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="27dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/amazon"
+        app:layout_constraintBottom_toTopOf="@+id/date_completed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book_info_status_spinner"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/amazon"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
