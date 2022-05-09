@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -201,7 +202,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             System.out.println("clicked");
-                            PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+                            PopupMenu popupMenu = new PopupMenu(getActivity(), view, Gravity.RIGHT);
                             popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
                             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                 @Override
