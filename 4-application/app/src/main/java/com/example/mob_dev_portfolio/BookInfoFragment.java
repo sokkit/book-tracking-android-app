@@ -102,6 +102,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         EditText quoteEditText = (EditText) getView().findViewById(R.id.book_info_quote_edit_text);
         Button quoteButton = (Button) getView().findViewById(R.id.book_info_add_quote_button);
         ListView quoteListView = (ListView) getView().findViewById(R.id.book_info_quote_list);
+        ImageView amazonLink = (ImageView) getView().findViewById(R.id.book_info_amazon);
 
         SharedPreferences.Editor editor = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE).edit();
 
@@ -160,6 +161,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         // End of reference
 
 
+
         // If user reaches page from Reading, Read, or TBR sections
         if (this.getArguments().containsKey("current book")) {
             int currentBook = this.getArguments().getInt("current book");
@@ -182,9 +184,18 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                     List<Quote> quoteList;
                     // get book using id from bundle
                     Book bookToView = db.bookDao().getByBookId(currentBook);
+                    // Set Amazon link
+                    String urlToDirectTo = parseTitleForAmazonSearch(bookToView.getTitle());
+                    amazonLink.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Uri uri = Uri.parse(urlToDirectTo);
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(intent);
+                        }
+                    });
                     // Get quotes from book id
                     quoteList = db.bookDao().getQuotesByBookId(currentBook);
-                    System.out.println(quoteList);
                     // Add quotes to list
                     ArrayList<String> listContent = new ArrayList<String>();
                     for (Quote q: quoteList) {
@@ -235,6 +246,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                             if (quoteList.size()==0) {
                                 quoteListView.setVisibility(View.GONE);
                             }
+                            // Fill in book information from database
                             Picasso.get().load(bookToView.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
                             review.setText(bookToView.getReview());
                             titleText.setText(bookToView.getTitle());
@@ -301,6 +313,12 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                         db.bookDao().updateDateCompleted(dateCompleted.getText().toString(), currentBook);
                                         db.bookDao().updateReadingStatus(newStatus, currentBook);
                                         db.bookDao().updateRating(ratingValue, currentBook);
+                                        // Activate trophy if this is tenth book added to tbr
+                                        List<Book> tbrList = db.bookDao().getBooksByStatus(2);
+                                        if (tbrList.size() == 9 && newStatus == 2) {
+                                            editor.putBoolean("tenTbr", true);
+                                            editor.apply();
+                                        }
                                         Toast.makeText(getContext(), "Book updated!", Toast.LENGTH_SHORT).show();
                                     }
                                     // end of validation
@@ -331,12 +349,16 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
 
 
             // If user reaches page from home page
+            // Differences fom accessing from other pages:
+            // Book is not in database so temporary book object is created
+            // On submit, a check is made to see if book is already in collection
+            // Quotes aren't added
         } else if (this.getArguments().containsKey("potential book")) {
             BookSearch currentBook = this.getArguments().getParcelable("potential book");
             currentBook.setDateAdded(getTodaysDate());
             Picasso.get().load(currentBook.getThumbnail()).error(R.drawable.cover_not_found).fit().into(smallCover);
 
-//        Get book info from database
+//        Create database instance
             Context context = getContext();
             BookDB db = BookDB.getInstance(context);
             this.executor = Executors.newFixedThreadPool(4);
@@ -354,6 +376,17 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                         editor.putBoolean("tenTbr", true);
                         editor.apply();
                     }
+
+                    // Set Amazon link
+                    String urlToDirectTo = parseTitleForAmazonSearch(bookToView.getTitle());
+                    amazonLink.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Uri uri = Uri.parse(urlToDirectTo);
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(intent);
+                        }
+                    });
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -396,7 +429,6 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                         }
                                     }
                                     if (choice.equals("TBR")) {
-                                        System.out.println("CHoice is TBR");
                                         if (!dateCompleted.getText().toString().equals("") || !dateStarted.getText().toString().equals("")) {
                                             Toast.makeText(getContext(), "No dates needed for To Be Read books", Toast.LENGTH_SHORT).show();
                                             clearDates(dateCompleted, dateStarted);
@@ -421,6 +453,12 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                                             bookToView.setDateCompleted(dateCompleted.getText().toString());
                                                             bookToView.setRating(rating.getRating());
                                                             db.bookDao().insertAll(bookToView);
+                                                            // Activate trophy if this is tenth book added to tbr
+                                                            List<Book> tbrList = db.bookDao().getBooksByStatus(2);
+                                                            if (tbrList.size() == 9 && finalNewStatus == 2) {
+                                                                editor.putBoolean("tenTbr", true);
+                                                                editor.apply();
+                                                            }
                                                             Toast.makeText(getContext(), "Book added!", Toast.LENGTH_SHORT).show();
                                                             break;
 
@@ -441,6 +479,12 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                             bookToView.setDateCompleted(dateCompleted.getText().toString());
                                             bookToView.setRating(rating.getRating());
                                             db.bookDao().insertAll(bookToView);
+                                            // Activate trophy if this is tenth book added to tbr
+                                            List<Book> tbrList = db.bookDao().getBooksByStatus(2);
+                                            if (tbrList.size() == 9 && finalNewStatus == 2) {
+                                                editor.putBoolean("tenTbr", true);
+                                                editor.apply();
+                                            }
                                             Toast.makeText(getContext(), "Book added!", Toast.LENGTH_SHORT).show();
 
                                         }
@@ -503,5 +547,12 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "Storage permission needed to share book cover with quote", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public String parseTitleForAmazonSearch(String inputTitle) {
+        String replaceSpaces = inputTitle.replaceAll("\\s+", "+");
+        String replaceAmpersands = replaceSpaces.replaceAll("&", "and");
+        String url = "https://www.amazon.co.uk/s?k=" + replaceAmpersands + "&i=stripbooks";
+        return url;
     }
 }
