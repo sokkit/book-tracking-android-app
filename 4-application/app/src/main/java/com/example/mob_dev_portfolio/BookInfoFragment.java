@@ -1,15 +1,27 @@
 package com.example.mob_dev_portfolio;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +46,7 @@ import com.example.mob_dev_portfolio.data.BookDB;
 import com.example.mob_dev_portfolio.data.Quote;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +60,10 @@ import java.util.concurrent.Executors;
 public class BookInfoFragment extends Fragment implements View.OnClickListener {
 
     ExecutorService executor;
+    private int STORAGE_PERMISSION_CODE = 1;
+    private String textToShare;
+    private ImageView smallCover;
+
 
     public BookInfoFragment() {
         // Required empty public constructor
@@ -69,6 +86,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstance) {
 
 
+
         TextView titleText = (TextView) getView().findViewById(R.id.book_info_title);
         TextView authorText = (TextView) getView().findViewById(R.id.book_info_authors);
         Spinner readingStatus = (Spinner) getView().findViewById(R.id.book_info_status_spinner);
@@ -77,7 +95,7 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         EditText dateCompleted = (EditText) getView().findViewById(R.id.date_completed);
         EditText review = (EditText) getView().findViewById(R.id.book_info_review);
         RatingBar rating = (RatingBar) getView().findViewById(R.id.book_info_rating);
-        ImageView smallCover = (ImageView) getView().findViewById(R.id.book_info_small_cover);
+        smallCover = (ImageView) getView().findViewById(R.id.book_info_small_cover);
         TextView descriptionText = (TextView) getView().findViewById(R.id.book_info_description);
         TextView quoteHeading = (TextView) getView().findViewById(R.id.book_info_quotes_heading);
         EditText quoteEditText = (EditText) getView().findViewById(R.id.book_info_quote_edit_text);
@@ -192,11 +210,11 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                     switch (menuItem.getItemId()) {
 
                                         case R.id.popup_share:
-                                            System.out.println("share");
+                                            textToShare = "Check out this quote from " + bookToView.getTitle() + ":" + "\n\n" + '"' + listContent.get(i) + '"' + "\n\n Shared with ReadMe";
+                                            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
                                             break;
 
                                         case R.id.popup_delete:
-                                            System.out.println("delete");
                                             db.bookDao().deleteQuote(listContent.get(i));
                                             listContent.remove(i);
                                             la.notifyDataSetChanged();
@@ -461,5 +479,28 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            // if permission granted
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // create share intent with book cover and quote
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
+                // write book cover to phone to be able to share it
+                BitmapDrawable bitmapDrawable = ((BitmapDrawable) smallCover.getDrawable());
+                Bitmap bitmap = bitmapDrawable .getBitmap();
+                String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), bitmap, "image", null);
+                Uri bitmapUri = Uri.parse(path);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+                shareIntent.setType("text/plain");
+                startActivity(shareIntent);
+            } else {
+                Toast.makeText(getContext(), "Storage permission needed to share book cover with quote", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
