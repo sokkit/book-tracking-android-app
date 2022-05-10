@@ -9,8 +9,8 @@
         <item>TBR</item>
     </string-array>
     <string-array name="listsortspinneroptions">
-        <item>Author</item>
         <item>Title</item>
+        <item>Author</item>
         <item>Date</item>
     </string-array>
     <string name="submit_text">Submit</string>

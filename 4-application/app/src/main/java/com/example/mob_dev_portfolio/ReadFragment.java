@@ -33,7 +33,7 @@ public class ReadFragment extends Fragment {
     ExecutorService executor;
     Spinner sortSpinner;
     Boolean ascending;
-    ImageView sortswitch;
+    ImageView sortSwitch;
 
     public ReadFragment() {
         // Required empty public constructor
@@ -52,14 +52,13 @@ public class ReadFragment extends Fragment {
         Context context = getContext();
         BookDB db = BookDB.getInstance(context);
         ascending = true;
-        sortswitch = (ImageView) getView().findViewById(R.id.reading_sort_switch);
+        sortSwitch = (ImageView) getView().findViewById(R.id.reading_sort_switch);
 
         executor.execute(new Runnable() {
             @Override
             public void run() {
 //                get read books from database
                 List<Book> readBooks = db.bookDao().getBooksByStatus(1);
-
 //                create new thread to update list
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -68,14 +67,24 @@ public class ReadFragment extends Fragment {
                             ListAdapter adapter=new ListAdapter(getContext(), readBooks);
                             ListView lv = (ListView) getView().findViewById(R.id.custom_list_reading);
                             lv.setAdapter(adapter);
+                            Collections.sort(readBooks, compareByTitle);
+                            adapter.notifyDataSetChanged();
                             sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                    if (sortSpinner.getSelectedItem().toString().equals("Title")) {
-                                        System.out.println("title clicked");
-                                        Collections.sort(readBooks, compareByTitle);
-                                        adapter.notifyDataSetChanged();
+                                    String selectedItem = sortSpinner.getSelectedItem().toString();
+                                    switch (selectedItem) {
+                                        case "Author":
+                                            Collections.sort(readBooks, compareByAuthor);
+                                            break;
+                                        case "Title":
+                                            Collections.sort(readBooks, compareByTitle);
+                                            break;
+                                        case "Date":
+                                            Collections.sort(readBooks, compareByDate);
+                                            break;
                                     }
+                                    adapter.notifyDataSetChanged();
                                 }
 
                                 @Override
@@ -83,7 +92,7 @@ public class ReadFragment extends Fragment {
 
                                 }
                             });
-                            sortswitch.setOnClickListener(new View.OnClickListener() {
+                            sortSwitch.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     String itemSelected = sortSpinner.getSelectedItem().toString();

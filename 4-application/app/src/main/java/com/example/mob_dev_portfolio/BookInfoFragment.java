@@ -419,11 +419,23 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
                                             Toast.makeText(getContext(), "Date completed can't be before date started", Toast.LENGTH_SHORT).show();
                                             clearDates(dateCompleted, dateStarted);
                                             validValues = false;
+                                        } else if (dateBefore(getTodaysDate(), dateCompleted.getText().toString())) {
+                                            Toast.makeText(getContext(), "Date completed can't be after today's date", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
+                                        } else if (dateBefore(getTodaysDate(), dateStarted.getText().toString())) {
+                                            Toast.makeText(getContext(), "Date started can't be after today's date", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
                                         }
                                     }
                                     if (choice.equals("Reading")) {
                                         if (!dateCompleted.getText().toString().equals("") || dateStarted.getText().toString().equals("")) {
                                             Toast.makeText(getContext(), "Invalid dates for reading book", Toast.LENGTH_SHORT).show();
+                                            clearDates(dateCompleted, dateStarted);
+                                            validValues = false;
+                                        } else if (dateBefore(getTodaysDate(), dateStarted.getText().toString())) {
+                                            Toast.makeText(getContext(), "Date started can't be after today's date", Toast.LENGTH_SHORT).show();
                                             clearDates(dateCompleted, dateStarted);
                                             validValues = false;
                                         }
@@ -519,6 +531,16 @@ public class BookInfoFragment extends Fragment implements View.OnClickListener {
         LocalDate formattedDate1 = LocalDate.parse(date1, formatter);
         LocalDate formattedDate2 = LocalDate.parse(date2, formatter);
         return formattedDate1.isBefore(formattedDate2);
+    }
+
+    public LocalDate stringDateConverter(String date) {
+//        reference
+//        taken from https://www.baeldung.com/java-string-to-date
+//        last accessed 17/03/2022
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dateAns = LocalDate.parse(date, formatter);
+//        end of reference
+        return dateAns;
     }
 
     @Override
