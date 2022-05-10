@@ -63,10 +63,10 @@ public class HomeFragment extends Fragment {
         btScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
+                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
                 intentIntegrator.setPrompt("Scan a book barcode");
                 intentIntegrator.setBeepEnabled(false);
-                intentIntegrator.setOrientationLocked(true);
+                intentIntegrator.setOrientationLocked(false);
                 intentIntegrator.initiateScan();
             }
         });
