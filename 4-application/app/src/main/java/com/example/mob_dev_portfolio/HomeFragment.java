@@ -64,11 +64,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
-                intentIntegrator.forSupportFragment(HomeFragment.this).setPrompt("For flash use volume up key");
-                intentIntegrator.forSupportFragment(HomeFragment.this).setBeepEnabled(false);
-                intentIntegrator.forSupportFragment(HomeFragment.this).setOrientationLocked(false);
-                intentIntegrator.forSupportFragment(HomeFragment.this).setCaptureActivity(Capture.class);
-                intentIntegrator.forSupportFragment(HomeFragment.this).initiateScan();
+                intentIntegrator.setPrompt("Scan a book barcode");
+                intentIntegrator.setBeepEnabled(false);
+                intentIntegrator.setOrientationLocked(true);
+                intentIntegrator.initiateScan();
             }
         });
         // end of reference
