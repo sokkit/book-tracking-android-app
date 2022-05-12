@@ -43,7 +43,7 @@
 
     <EditText
         android:id="@+id/date_started"
-        android:layout_width="150dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="220dp"
         android:layout_marginEnd="200dp"
@@ -58,7 +58,7 @@
 
     <EditText
         android:id="@+id/date_completed"
-        android:layout_width="150dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="200dp"
         android:layout_marginTop="220dp"
