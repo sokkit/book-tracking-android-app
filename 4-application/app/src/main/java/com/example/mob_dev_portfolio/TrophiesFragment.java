@@ -103,7 +103,7 @@ public class TrophiesFragment extends Fragment {
                                 if (differenceInDays(b.getDateStarted(), b.getDateCompleted()) < 8) {
                                     completedInWeek = true;
                                 }
-                                if (differenceInDays(b.getDateStarted(), b.getDateCompleted()) < 2) {
+                                if (differenceInDays(b.getDateStarted(), b.getDateCompleted()) <= 1) {
                                     completedInDay = true;
                                 }
                             } catch (ParseException e) {
@@ -145,7 +145,7 @@ public class TrophiesFragment extends Fragment {
     public long differenceInDays(String date1, String date2) throws ParseException {
         // Ref get difference between two dates
         // Taken from https://stackoverflow.com/a/28692025/14457259
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("d/M/yyyy");
 
         Date d1 = null;
         Date d2 = null;
@@ -155,7 +155,6 @@ public class TrophiesFragment extends Fragment {
 
         long diff = d2.getTime() - d1.getTime();
         long diffDays = diff / (24 * 60 * 60 * 1000);
-
         return diffDays;
         // End of reference
     }
